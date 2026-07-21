@@ -14,6 +14,7 @@
     
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif; -webkit-tap-highlight-color: transparent; }
     
+    /* 🌸 柔和粉紅背景 */
     body { background-color: #fff5f7; color: #4a3e3d; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 2rem; }
     
     /* 🌸 櫻花粉頂欄 */
@@ -23,7 +24,7 @@
     .title-area h1 { font-size: 1.3rem; font-weight: 800; color: #831843; }
     .title-area p { color: #9d174d; font-size: 0.75rem; opacity: 0.85; margin-top: 0.1rem; }
     
-    .btn-group { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+    .btn-group { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
     .btn { padding: 0.45rem 0.85rem; font-size: 0.78rem; font-weight: 700; border-radius: 1rem; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.3rem; transition: all 0.15s ease; }
     .btn:active { transform: scale(0.95); }
     .btn-pink { background-color: #f472b6; color: white; box-shadow: 0 3px 8px rgba(244, 114, 182, 0.35); }
@@ -39,7 +40,7 @@
 
     main { max-width: 1200px; margin: 0 auto; padding: 1.25rem 0.85rem; flex-grow: 1; width: 100%; }
     
-    /* 🌸 篩選與搜尋列 */
+    /* 🌸 篩選與音速控制列 */
     .filter-card { background-color: white; padding: 0.85rem 1rem; border-radius: 1.25rem; border: 2px solid #fbcfe8; margin-bottom: 1.25rem; box-shadow: 0 4px 12px rgba(251, 207, 232, 0.25); }
     .select-box, .input-box, .textarea-box { width: 100%; background-color: #fff5f7; border: 1.5px solid #fbcfe8; color: #831843; border-radius: 0.85rem; padding: 0.55rem 0.85rem; font-size: 0.85rem; outline: none; transition: border-color 0.2s; }
     .textarea-box { min-height: 110px; font-family: inherit; }
@@ -64,7 +65,7 @@
     .term-def { font-size: 0.75rem; color: #9d174d; margin-top: 0.2rem; line-height: 1.35; }
     .sentence-box { font-size: 0.72rem; color: #475569; background-color: #f8fafc; padding: 0.4rem 0.6rem; border-radius: 0.5rem; margin-top: 0.3rem; border-left: 3px solid #f472b6; }
 
-    .card-footer { background-color: #fff1f2; padding: 0.65rem 1.15rem; border-top: 1px solid #ffe4e6; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
+    .card-footer { background-color: #fff1f2; padding: 0.65rem 1.15rem; border-top: 1px solid #ffe4e6; display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; flex-wrap: wrap; gap: 0.3rem; }
 
     /* 🌸 聽寫測驗特別區 */
     .quiz-card { background-color: white; border-radius: 1.25rem; border: 2px solid #fbcfe8; padding: 1rem; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; }
@@ -74,6 +75,17 @@
     .modal-overlay { position: fixed; inset: 0; background-color: rgba(131, 24, 67, 0.35); backdrop-filter: blur(4px); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; }
     .modal-content { background-color: white; border-radius: 1.75rem; max-width: 550px; width: 100%; overflow: hidden; border: 2px solid #fbcfe8; box-shadow: 0 10px 25px rgba(131, 24, 67, 0.2); }
     .hidden { display: none !important; }
+
+    /* 🖨️ 專屬列印學習單樣式 (Print Style) */
+    @media print {
+      body { background-color: white !important; color: black !important; padding: 0 !important; }
+      header, nav, .btn-group, .filter-card, .card-footer, .audio-btn, #searchSection { display: none !important; }
+      main { max-width: 100% !important; padding: 0 !important; }
+      .card-grid { display: block !important; }
+      .char-card { page-break-inside: avoid; border: 1px solid #ccc !important; box-shadow: none !important; margin-bottom: 1.5rem !important; }
+      .quiz-card { page-break-inside: avoid; border: 1px solid #999 !important; }
+      .quiz-mask { background-color: transparent !important; color: black !important; border: 1px dashed #666; min-width: 80px; display: inline-block; }
+    }
   </style>
 </head>
 <body>
@@ -84,10 +96,11 @@
         <div class="badge">5上</div>
         <div class="title-area">
           <h1>🌸 康軒國語五上 學習字典</h1>
-          <p>詳細生字、成語圈詞、例句與發音聽寫</p>
+          <p>詳細生字、教育部辭典、音速可調與列印學習單</p>
         </div>
       </div>
       <div class="btn-group">
+        <button onclick="window.print()" class="btn btn-pink">🖨️ 列印學習單</button>
         <button onclick="exportData()" class="btn btn-soft">📤 備份</button>
         <button onclick="triggerImport()" class="btn btn-soft">📥 匯入</button>
         <button onclick="resetToDefaultData()" class="btn btn-rose">🔄 重置</button>
@@ -106,12 +119,20 @@
   </nav>
 
   <main>
-    <!-- 搜尋與選課列 -->
+    <!-- 搜尋與音速調整列 -->
     <div id="searchSection" class="filter-card">
       <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center;">
-        <div style="flex: 1; min-width: 160px;">
+        <div style="flex: 1; min-width: 140px;">
           <label style="font-size: 0.72rem; font-weight: 800; color: #9d174d;">選擇課次：</label>
           <select id="lessonSelect" onchange="renderApp()" class="select-box" style="margin-top: 0.2rem;"></select>
+        </div>
+        <div style="flex: 1; min-width: 130px;">
+          <label style="font-size: 0.72rem; font-weight: 800; color: #9d174d;">🔊 朗讀音速：</label>
+          <select id="speechRateSelect" class="select-box" style="margin-top: 0.2rem;">
+            <option value="0.5">🐢 慢速 (0.5x)</option>
+            <option value="0.8" selected>🌸 正常 (0.8x)</option>
+            <option value="1.2">🐇 快速 (1.2x)</option>
+          </select>
         </div>
         <div style="flex: 2; min-width: 180px;">
           <label style="font-size: 0.72rem; font-weight: 800; color: #9d174d;">搜尋生字/注音/圈詞：</label>
@@ -131,9 +152,9 @@
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
           <div>
             <h2 style="font-size: 1.15rem; font-weight: 800; color: #831843;">✍️ 圈詞聽寫測驗與自我練習</h2>
-            <p style="font-size: 0.75rem; color: #9d174d; margin-top: 0.1rem;">點擊「🔊 播放發音」聽寫，再點擊粉紅遮罩開起答案對答案！</p>
+            <p style="font-size: 0.75rem; color: #9d174d; margin-top: 0.1rem;">點擊「🔊 播放題目」聽寫，點粉紅遮罩顯示答案；亦可點右上「🖨️ 列印」印出試卷！</p>
           </div>
-          <button onclick="toggleAllQuizMasks()" class="btn btn-pink">👁️ 一鍵顯示/隱藏全部答案</button>
+          <button onclick="toggleAllQuizMasks()" class="btn btn-pink">👁️ 顯示/隱藏全部答案</button>
         </div>
         <div id="quizListContainer" style="display: flex; flex-direction: column;"></div>
       </div>
@@ -237,7 +258,8 @@
     <div class="modal-content">
       <div id="modalHeader" style="background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); color: #831843; padding: 1.15rem; display: flex; justify-content: space-between; align-items: center;"></div>
       <div id="modalBody" style="padding: 1.15rem; max-height: 65vh; overflow-y: auto;"></div>
-      <div style="background-color: #fff5f7; padding: 0.75rem 1.15rem; display: flex; justify-content: flex-end;">
+      <div style="background-color: #fff5f7; padding: 0.75rem 1.15rem; display: flex; justify-content: flex-end; gap:0.5rem;">
+        <button id="modalMoeBtn" onclick="" class="btn btn-pink" style="font-size:0.75rem;">🏛️ 教育部辭典</button>
         <button onclick="closeModal()" class="btn btn-soft">關閉視窗</button>
       </div>
     </div>
@@ -336,7 +358,7 @@
     };
 
     function loadData() {
-      const stored = localStorage.getItem('kanghan_5a_detailed_pink_data');
+      const stored = localStorage.getItem('kanghan_5a_v2_pink_data');
       if (stored) {
         try { appData = JSON.parse(stored); } catch(e) { appData = DEFAULT_DATA; }
       } else {
@@ -345,7 +367,7 @@
       }
     }
 
-    function saveData() { localStorage.setItem('kanghan_5a_detailed_pink_data', JSON.stringify(appData)); }
+    function saveData() { localStorage.setItem('kanghan_5a_v2_pink_data', JSON.stringify(appData)); }
 
     function resetToDefaultData() {
       if (confirm("確定要將所有資料恢復為預設課文嗎？（您自己新增的資料會被重置）")) {
@@ -396,6 +418,11 @@
       else if (currentTab === 'quiz') renderQuiz(filtered);
     }
 
+    function openMoeDict(word) {
+      const url = `https://dict.revised.moe.edu.tw/search.jsp?md=1&word=${encodeURIComponent(word)}`;
+      window.open(url, '_blank');
+    }
+
     function renderDict(items) {
       const container = document.getElementById('dictContentList');
       if (items.length === 0) {
@@ -439,10 +466,13 @@
           </div>
 
           <div class="card-footer">
-            <button onclick="openDetailModal('${item.id}')" style="color:#db2777; border:none; background:none; font-weight:800; cursor:pointer;">🔍 詳細卡片</button>
+            <div>
+              <button onclick="openDetailModal('${item.id}')" style="color:#db2777; border:none; background:none; font-weight:800; cursor:pointer;">🔍 詳細</button>
+              <button onclick="openMoeDict('${item.char}')" style="color:#0284c7; border:none; background:none; font-weight:800; cursor:pointer; margin-left:0.3rem;">🏛️ 教育部辭典</button>
+            </div>
             <div>
               <button onclick="editCharItem('${item.id}')" style="color:#9d174d; border:none; background:none; font-weight:700; cursor:pointer;">✏️ 編輯</button>
-              <button onclick="deleteCharItem('${item.id}')" style="color:#fb7185; border:none; background:none; font-weight:700; cursor:pointer; margin-left:0.5rem;">🗑️ 刪除</button>
+              <button onclick="deleteCharItem('${item.id}')" style="color:#fb7185; border:none; background:none; font-weight:700; cursor:pointer; margin-left:0.3rem;">🗑️ 刪除</button>
             </div>
           </div>
         </div>
@@ -497,7 +527,11 @@
       window.speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
       u.lang = 'zh-TW';
-      u.rate = 0.9;
+      
+      // 讀取設定好的音速
+      const rateVal = parseFloat(document.getElementById('speechRateSelect').value) || 0.8;
+      u.rate = rateVal;
+      
       window.speechSynthesis.speak(u);
     }
 
@@ -641,6 +675,9 @@
     function openDetailModal(id) {
       const item = appData.find(i => i.id === id);
       if (!item) return;
+      
+      document.getElementById('modalMoeBtn').onclick = function() { openMoeDict(item.char); };
+
       document.getElementById('modalHeader').innerHTML = `
         <div style="display:flex; align-items:center; gap:0.5rem;">
           <h2 style="color:#831843; font-size:1.3rem;">${item.char}</h2>
