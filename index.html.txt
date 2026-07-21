@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>五年級(上冊)康軒版國語生字統整</title>
+  
+  <link rel="apple-touch-icon" href="custom-icon.png">
+  <link rel="icon" type="image/png" href="custom-icon.png">
+
+  <style>
+    :root {
+      --bg-color: #fcfaf2;
+      --card-bg: #ffffff;
+      --primary: #8c6d48;
+      --primary-dark: #654d30;
+      --accent: #d9a05b;
+      --text-main: #3e3832;
+      --text-light: #7c736a;
+      --border-color: #e6dfd1;
+      --danger: #b85d4f;
+      --warning-bg: #fdf6ec;
+      --warning-border: #f3d5b5;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
+    
+    body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 2rem; }
+    
+    header { background: linear-gradient(135deg, #f7f2e7 0%, #ebe2ce 100%); color: var(--primary-dark); padding: 1.2rem 1rem; border-bottom: 2px solid var(--border-color); }
+    .header-container { max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem; }
+    .badge { background-color: var(--primary); color: white; font-weight: 700; padding: 0.35rem 0.75rem; border-radius: 0.5rem; font-size: 1rem; }
+    .title-area h1 { font-size: 1.25rem; font-weight: 800; color: var(--primary-dark); letter-spacing: 0.05em; }
+    .title-area p { color: var(--text-light); font-size: 0.75rem; margin-top: 0.1rem; }
+    
+    .btn-group { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+    .btn { padding: 0.45rem 0.85rem; font-size: 0.78rem; font-weight: 600; border-radius: 0.5rem; border: 1px solid var(--border-color); cursor: pointer; display: inline-flex; align-items: center; gap: 0.3rem; background: #fff; color: var(--primary-dark); transition: all 0.1s; }
+    .btn:active { transform: scale(0.96); }
+    .btn-primary { background-color: var(--primary); color: white; border-color: var(--primary); }
+    .btn-danger { background-color: var(--danger); color: white; border-color: var(--danger); }
+
+    nav { background-color: white; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 30; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+    .nav-container { max-width: 1100px; margin: 0 auto; display: flex; overflow-x: auto; padding: 0 0.5rem; scrollbar-width: none; }
+    .nav-container::-webkit-scrollbar { display: none; }
+    .nav-btn { padding: 0.85rem 1rem; font-size: 0.85rem; font-weight: 700; background: none; border: none; border-bottom: 3px solid transparent; color: var(--text-light); cursor: pointer; white-space: nowrap; }
+    .nav-btn.active { color: var(--primary-dark); border-bottom-color: var(--primary); }
+
+    main { max-width: 1100px; margin: 0 auto; padding: 1.25rem 0.85rem; flex-grow: 1; width: 100%; }
+    
+    .panel { background: var(--card-bg); border-radius: 1rem; border: 1px solid var(--border-color); padding: 1.25rem; margin-bottom: 1.25rem; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+    .input-box, .select-box, .textarea-box { width: 100%; background: #fff; border: 1px solid var(--border-color); color: var(--text-main); border-radius: 0.5rem; padding: 0.55rem 0.75rem; font-size: 0.85rem; outline: none; }
+    .input-box:focus, .select-box:focus, .textarea-box:focus { border-color: var(--primary); }
+    .textarea-box { min-height: 100px; font-family: inherit; }
+
+    /* 課程卡片與生字樣式 */
+    .lesson-card { background: white; border: 1px solid var(--border-color); border-radius: 1rem; margin-bottom: 1.5rem; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+    .lesson-header { background: #fdfbf7; padding: 1rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+    .lesson-title { font-size: 1.1rem; font-weight: 800; color: var(--primary-dark); }
+    
+    .char-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; padding: 1rem; }
+    .char-item-card { background: #fff; border: 1px solid var(--border-color); border-radius: 0.75rem; padding: 0.85rem; position: relative; }
+    .char-item-card.warning-box { background-color: var(--warning-bg); border-color: var(--warning-border); }
+
+    .tag { display: inline-block; background: #f4eee1; color: var(--primary-dark); font-size: 0.7rem; font-weight: 600; padding: 0.1rem 0.4rem; border-radius: 0.3rem; margin-right: 0.2rem; }
+    .tag-danger { background-color: #fde8e8; color: var(--danger); }
+
+    /* 田字格產生器樣式 */
+    .tian-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .tian-cell { width: 4.5rem; height: 4.5rem; border: 2px solid var(--primary); position: relative; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: 700; background: #fff; }
+    .tian-cell::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom right, transparent calc(50% - 0.5px), var(--border-color) calc(50% - 0.5px), var(--border-color) calc(50% + 0.5px), transparent calc(50% + 0.5px)), linear-gradient(to top right, transparent calc(50% - 0.5px), var(--border-color) calc(50% - 0.5px), var(--border-color) calc(50% + 0.5px), transparent calc(50% + 0.5px)); pointer-events: none; }
+    
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <div style="display:flex; align-items:center; gap:0.6rem;">
+        <div class="badge">5上</div>
+        <div class="title-area">
+          <h1>五年級(上冊) 康軒版國語生字統整</h1>
+          <p>內建線上查字典、易錯標記、田字格聽寫單與直行生詞簿</p>
+        </div>
+      </div>
+      <div class="btn-group">
+        <button onclick="exportData()" class="btn">📤 匯出備份</button>
+        <button onclick="triggerImport()" class="btn">📥 還原</button>
+        <button onclick="resetData()" class="btn" style="color:var(--danger);">🔄 重置</button>
+        <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
+      </div>
+    </div>
+  </header>
+
+  <nav>
+    <div class="nav-container">
+      <button onclick="switchTab('dict')" id="tab-dict" class="nav-btn active">📖 課文生字與圈詞</button>
+      <button onclick="switchTab('batch')" id="tab-batch" class="nav-btn">⚡ 批次快速輸入</button>
+      <button onclick="switchTab('search')" id="tab-search" class="nav-btn">🔍 線上查字典</button>
+      <button onclick="switchTab('vocab')" id="tab-vocab" class="nav-btn">📜 直行生詞簿</button>
+      <button onclick="switchTab('worksheet')" id="tab-worksheet" class="nav-btn">🖨️ 田字格聽寫單</button>
+    </div>
+  </nav>
+
+  <main>
+    <!-- 1. 生字與圈詞總覽視圖 -->
+    <section id="view-dict">
+      <div class="panel" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.75rem;">
+        <div>
+          <h3 style="font-size:1rem; font-weight:800; color:var(--primary-dark);">📚 康軒五年級上學期（第 1 至 12 課）</h3>
+          <p style="font-size:0.75rem; color:var(--text-light);">可隨時點擊各課下方的「新增自訂圈詞」或標記易錯字！</p>
+        </div>
+        <input type="text" id="globalSearch" oninput="renderDict()" placeholder="搜尋字詞、注音..." class="input-box" style="max-width:240px;">
+      </div>
+      <div id="lessonContainer"></div>
+    </section>
+
+    <!-- 2. 批次快速輸入視圖 -->
+    <section id="view-batch" class="hidden">
+      <div class="panel" style="max-width:700px; margin:0 auto;">
+        <h3 style="font-size:1.1rem; font-weight:800; color:var(--primary-dark); margin-bottom:0.5rem;">⚡ 批次貼上匯入生字與圈詞</h3>
+        <p style="font-size:0.75rem; color:var(--text-light); margin-bottom:1rem;">您可以把雲端硬碟或其他檔案裡的生字直接貼過來！格式：<code>生字, 注音, 部首, 圈詞</code>（每行一筆）</p>
+        
+        <div style="margin-bottom:0.75rem;">
+          <label style="font-size:0.75rem; font-weight:700; color:var(--primary-dark);">選擇要匯入的課次：</label>
+          <select id="batchLessonSelect" class="select-box" style="margin-top:0.25rem;"></select>
+        </div>
+
+        <div style="margin-bottom:0.75rem;">
+          <label style="font-size:0.75rem; font-weight:700; color:var(--primary-dark);">貼上文字：</label>
+          <textarea id="batchText" class="textarea-box" placeholder="墨, ㄇㄛˋ, 土部, 墨汁
+豐富, ㄈㄥ ㄈㄨˋ, 豆部, 豐富多彩"></textarea>
+        </div>
+
+        <button onclick="handleBatchImport()" class="btn btn-primary" style="width:100%; justify-content:center;">🚀 一鍵批次匯入</button>
+      </div>
+    </section>
+
+    <!-- 3. 線上查字典視圖 -->
+    <section id="view-search" class="hidden">
+      <div class="panel" style="max-width:700px; margin:0 auto;">
+        <h3 style="font-size:1.1rem; font-weight:800; color:var(--primary-dark); margin-bottom:0.5rem;">🔍 整合型教育部線上字典</h3>
+        <p style="font-size:0.75rem; color:var(--text-light); margin-bottom:1rem;">輸入任何生字或詞語，一鍵即可快速檢索注音、部首與字義解釋！</p>
+        
+        <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+          <input type="text" id="onlineQuery" placeholder="例如：墨、豐富、急中生智..." class="input-box" onkeypress="if(event.key==='Enter') doMoeSearch()">
+          <button onclick="doMoeSearch()" class="btn btn-primary" style="white-space:nowrap;">查字典</button>
+        </div>
+
+        <div id="onlineResult" style="background:#fdfcf7; border:1px solid var(--border-color); border-radius:0.75rem; padding:1rem; min-height:120px; display:flex; align-items:center; justify-content:center; color:var(--text-light); font-size:0.85rem;">
+          輸入字詞後點擊查字典，結果將直接顯示於此。
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. 直行生詞簿視圖 -->
+    <section id="view-vocab" class="hidden">
+      <div class="panel">
+        <h3 style="font-size:1.1rem; font-weight:800; color:var(--primary-dark); margin-bottom:0.5rem;">📜 傳統直行生詞簿 (點擊隱藏背誦模式)</h3>
+        <p style="font-size:0.75rem; color:var(--text-light); margin-bottom:1rem;">點擊國字或注音可進行遮蔽，方便孩子複習與自我考聽寫！</p>
+        <div id="vocabListContainer"></div>
+      </div>
+    </section>
+
+    <!-- 5. 田字格聽寫單產生器 -->
+    <section id="view-worksheet" class="hidden">
+      <div class="panel" style="max-width:800px; margin:0 auto;">
+        <h3 style="font-size:1.1rem; font-weight:800; color:var(--primary-dark); margin-bottom:0.5rem;">🖨️ 標準田字格與注音練習單產生器</h3>
+        <p style="font-size:0.75rem; color:var(--text-light); margin-bottom:1rem;">勾選您想練習的生字，即可自動生成漂亮的練習格，支援網頁直接列印！</p>
+        
+        <div style="margin-bottom:1rem; display:flex; gap:0.75rem; align-items:center;">
+          <button onclick="window.print()" class="btn btn-primary">🖨️ 列印此學習單</button>
+          <span style="font-size:0.75rem; color:var(--text-light);">提示：列印時系統會自動排版為乾淨的 A4 試卷。</span>
+        </div>
+
+        <div id="worksheetSelector" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap:0.5rem; max-height:250px; overflow-y:auto; border:1px solid var(--border-color); padding:0.75rem; border-radius:0.5rem; margin-bottom:1rem;"></div>
+        
+        <div id="worksheetPreview" style="background:#fff; border:2px dashed var(--border-color); padding:1.5rem; border-radius:0.75rem;"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // 📚 康軒五年級上學期第 1 至 12 課完整預載結構
+    const DEFAULT_LESSONS = [
+      { id: 1, title: "【第一課】 智救墨馬", chars: [ { char: "墨", zhuyin: "ㄇㄛˋ", radical: "土", warning: false, warningText: "", terms: ["墨汁", "墨馬"] }, { char: "智", zhuyin: "ㄓˋ", radical: "日", warning: false, warningText: "", terms: ["智謀", "急中生智"] } ] },
+      { id: 2, title: "【第二課】 掉進井裏的狐狸", chars: [ { char: "狐", zhuyin: "ㄏㄨˊ", radical: "犬", warning: false, warningText: "", terms: ["狐狸", "狐假虎威"] }, { char: "井", zhuyin: "ㄐㄧㄥˇ", radical: "二", warning: false, warningText: "", terms: ["井底之蛙", "井井有條"] } ] },
+      { id: 3, title: "【第三課】 迎風奔跑", chars: [ { char: "奔", zhuyin: "ㄅㄣ", radical: "大", warning: false, warningText: "", terms: ["奔跑", "奔波"] } ] },
+      { id: 4, title: "【第四課】 點石成金", chars: [ { char: "金", zhuyin: "ㄐㄧㄣ", radical: "金", warning: false, warningText: "", terms: ["黃金", "點石成金"] } ] },
+      { id: 5, title: "【第五課】 做人要誠實", chars: [ { char: "誠", zhuyin: "ㄔㄥˊ", radical: "言", warning: false, warningText: "", terms: ["誠實", "真誠"] } ] },
+      { id: 6, title: "【第六課】 做自己的主人", chars: [ { char: "主", zhuyin: "ㄓㄨˇ", radical: "丶", warning: false, warningText: "", terms: ["主人", "主張"] } ] },
+      { id: 7, title: "【第七課】 地理大發現", chars: [ { char: "航", zhuyin: "ㄏㄤˊ", radical: "舟", warning: false, warningText: "", terms: ["航行", "航海"] } ] },
+      { id: 8, title: "【第八課】 探索海洋", chars: [ { char: "海", zhuyin: "ㄏㄞˇ", radical: "水", warning: false, warningText: "", terms: ["海洋", "海浪"] } ] },
+      { id: 9, title: "【第九課】 台灣的氣候", chars: [ { char: "氣", zhuyin: "ㄑㄧˋ", radical: "气", warning: false, warningText: "", terms: ["氣候", "氣溫"] } ] },
+      { id: 10, title: "【第十課】 觀察與實踐", chars: [ { char: "察", zhuyin: "ㄔㄚˊ", radical: "宀", warning: false, warningText: "", terms: ["觀察", "考察"] } ] },
+      { id: 11, title: "【第十一課】 擁抱夢想", chars: [ { char: "夢", zhuyin: "ㄇㄥˋ", radical: "夕", warning: false, warningText: "", terms: ["夢想", "發夢"] } ] },
+      { id: 12, title: "【第十二課】 永不放棄", chars: [ { char: "棄", zhuyin: "ㄑㄧˋ", radical: "木", warning: false, warningText: "", terms: ["放棄", "棄權"] } ] }
+    ];
+
+    let appLessons = [];
+
+    window.onload = function() {
+      loadData();
+      populateBatchDropdown();
+      renderDict();
+      renderVocab();
+      renderWorksheetSelector();
+    };
+
+    function loadData() {
+      const stored = localStorage.getItem('kanghan_5a_flagship_data_v2');
+      if (stored) {
+        try { appLessons = JSON.parse(stored); } catch(e) { appLessons = DEFAULT_LESSONS; }
+      } else {
+        appLessons = DEFAULT_LESSONS;
+        saveData();
+      }
+    }
+
+    function saveData() { localStorage.setItem('kanghan_5a_flagship_data_v2', JSON.stringify(appLessons)); }
+
+    function resetData() {
+      if (confirm("確定要將所有課文生字恢復為預設狀態嗎？")) {
+        appLessons = DEFAULT_LESSONS;
+        saveData();
+        renderDict();
+        renderVocab();
+        renderWorksheetSelector();
+        alert("已重置完成！");
+      }
+    }
+
+    function switchTab(tab) {
+      ['dict', 'batch', 'search', 'vocab', 'worksheet'].forEach(t => {
+        document.getElementById(`view-${t}`).classList.toggle('hidden', t !== tab);
+        document.getElementById(`tab-${t}`).classList.toggle('active', t === tab);
+      });
+      if (tab === 'worksheet') updateWorksheetPreview();
+    }
+
+    function populateBatchDropdown() {
+      const select = document.getElementById('batchLessonSelect');
+      select.innerHTML = '';
+      appLessons.forEach(l => {
+        select.innerHTML += `<option value="${l.id}">${l.title}</option>`;
+      });
+    }
+
+    function speak(txt) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(txt);
+      u.lang = 'zh-TW';
+      u.rate = 0.85;
+      window.speechSynthesis.speak(u);
+    }
+
+    /* 1. 課文生字與圈詞總覽渲染 */
+    function renderDict() {
+      const container = document.getElementById('lessonContainer');
+      const keyword = document.getElementById('globalSearch').value.trim().toLowerCase();
+
+      container.innerHTML = appLessons.map(lesson => {
+        const filteredChars = lesson.chars.filter(c => 
+          !keyword || c.char.includes(keyword) || c.zhuyin.includes(keyword) || c.terms.some(t => t.includes(keyword))
+        );
+
+        if (keyword && filteredChars.length === 0) return '';
+
+        return `
+          <div class="lesson-card">
+            <div class="lesson-header">
+              <div class="lesson-title" contenteditable="true" onblur="updateLessonTitle(${lesson.id}, this.innerText)">${lesson.title}</div>
+              <button onclick="addCustomTerm(${lesson.id})" class="btn" style="font-size:0.72rem;">➕ 新增自訂圈詞</button>
+            </div>
+            <div class="char-grid">
+              ${lesson.chars.map((c, cIdx) => `
+                <div class="char-item-card ${c.warning ? 'warning-box' : ''}">
+                  <div style="display:flex; justify-content:space-between; align-items:start; margin-bottom:0.4rem;">
+                    <div>
+                      <span style="font-size:1.4rem; font-weight:800; color:var(--primary-dark);">${c.char}</span>
+                      <span style="font-size:0.8rem; color:var(--primary); font-weight:700; margin-left:0.3rem;">(${c.zhuyin})</span>
+                    </div>
+                    <button onclick="speak('${c.char}')" style="border:none; background:#f4eee1; border-radius:50%; width:1.8rem; height:1.8rem; cursor:pointer; font-size:0.8rem;">🔊</button>
+                  </div>
+                  
+                  <div style="margin-bottom:0.4rem;">
+                    <span class="tag">部首：${c.radical}</span>
+                    <button onclick="toggleWarning(${lesson.id}, cIdx)" class="tag ${c.warning ? 'tag-danger' : ''}" style="cursor:pointer; border:none;">
+                      ${c.warning ? '⚠️ 已標記易錯' : '⚠️ 標記易錯'}
+                    </button>
+                  </div>
+
+                  ${c.warning && c.warningText ? `<div style="font-size:0.72rem; color:var(--danger); margin-bottom:0.3rem; font-weight:600;">提示：${c.warningText}</div>` : ''}
+
+                  <div style="font-size:0.78rem; color:var(--text-main); border-top:1px dashed var(--border-color); padding-top:0.3rem; margin-top:0.3rem;">
+                    <strong>圈詞：</strong> ${c.terms.join('、')}
+                  </div>
+
+                  <div style="margin-top:0.5rem; text-align:right;">
+                    <button onclick="deleteChar(${lesson.id}, ${cIdx})" style="border:none; background:none; color:var(--text-light); font-size:0.7rem; cursor:pointer;">🗑️ 刪除</button>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateLessonTitle(lessonId, newTitle) {
+      const l = appLessons.find(x => x.id === lessonId);
+      if (l) { l.title = newTitle.trim(); saveData(); }
+    }
+
+    function addCustomTerm(lessonId) {
+      const charInput = prompt("請輸入要新增的生字或詞語：");
+      if (!charInput) return;
+      const zhuyinInput = prompt("請輸入注音（例如：ㄇㄛˋ ㄓ）：", "");
+      const radicalInput = prompt("請輸入部首：", "通用");
+
+      const l = appLessons.find(x => x.id === lessonId);
+      if (l) {
+        l.chars.push({
+          char: charInput,
+          zhuyin: zhuyinInput || "無",
+          radical: radicalInput,
+          warning: false,
+          warningText: "",
+          terms: [charInput]
+        });
+        saveData();
+        renderDict();
+        renderVocab();
+        renderWorksheetSelector();
+        alert("成功新增字詞！");
+      }
+    }
+
+    function handleBatchImport() {
+      const lessonId = parseInt(document.getElementById('batchLessonSelect').value, 10);
+      const raw = document.getElementById('batchText').value.trim();
+      if (!raw) return alert("請輸入要匯入的文字！");
+
+      const l = appLessons.find(x => x.id === lessonId);
+      if (!l) return;
+
+      const lines = raw.split('\n');
+      let count = 0;
+      lines.forEach(line => {
+        const p = line.split(',').map(s => s.trim());
+        if (p.length >= 1 && p[0]) {
+          l.chars.push({
+            char: p[0],
+            zhuyin: p[1] || '',
+            radical: p[2] || '通用',
+            warning: false,
+            warningText: '',
+            terms: [p[3] || p[0]]
+          });
+          count++;
+        }
+      });
+
+      saveData();
+      document.getElementById('batchText').value = '';
+      renderDict();
+      renderVocab();
+      renderWorksheetSelector();
+      alert(`🎉 成功批次匯入 ${count} 筆生字資料！`);
+      switchTab('dict');
+    }
+
+    function toggleWarning(lessonId, cIdx) {
+      const l = appLessons.find(x => x.id === lessonId);
+      if (l && l.chars[cIdx]) {
+        l.chars[cIdx].warning = !l.chars[cIdx].warning;
+        if (l.chars[cIdx].warning) {
+          l.chars[cIdx].warningText = prompt("請輸入易錯重點提示：", "筆劃容易寫錯") || "注意易錯處";
+        } else {
+          l.chars[cIdx].warningText = "";
+        }
+        saveData();
+        renderDict();
+      }
+    }
+
+    function deleteChar(lessonId, cIdx) {
+      if (confirm("確定要刪除這個生字嗎？")) {
+        const l = appLessons.find(x => x.id === lessonId);
+        if (l) {
+          l.chars.splice(cIdx, 1);
+          saveData();
+          renderDict();
+          renderVocab();
+          renderWorksheetSelector();
+        }
+      }
+    }
+
+    /* 3. 線上查字典 (萌典 API 整合) */
+    async function doMoeSearch() {
+      const q = document.getElementById('onlineQuery').value.trim();
+      const resBox = document.getElementById('onlineResult');
+      if (!q) return alert("請輸入查詢字詞！");
+
+      resBox.innerHTML = `<div style="color:var(--primary);">正在查詢《${q}》...</div>`;
+
+      try {
+        const res = await fetch(`https://www.moedict.tw/a/${encodeURIComponent(q)}.json`);
+        if (!res.ok) throw new Error("not found");
+        const data = await res.json();
+        const hetero = data.heteronyms[0];
+        const bopomofo = hetero.bopomofo ? hetero.bopomofo.replace(/<[^>]*>?/gm, '') : '';
+        const def = hetero.definitions[0] ? hetero.definitions[0].def.replace(/<[^>]*>?/gm, '') : '';
+        const radical = data.radical || '';
+        const strokes = data.stroke_count || '';
+
+        resBox.innerHTML = `
+          <div style="text-align:left; width:100%;">
+            <div style="font-size:1.2rem; font-weight:800; color:var(--primary-dark); margin-bottom:0.3rem;">
+              ${data.title} <span style="font-size:0.9rem; color:var(--primary);">［${bopomofo}］</span>
+            </div>
+            <div style="font-size:0.78rem; color:var(--text-light); margin-bottom:0.5rem;">
+              部首：${radical}部 ｜ 筆劃：${strokes}畫
+            </div>
+            <div style="font-size:0.85rem; line-height:1.4; color:var(--text-main);">
+              <strong>釋義：</strong>${def}
+            </div>
+          </div>
+        `;
+      } catch (e) {
+        resBox.innerHTML = `
+          <div style="text-align:center;">
+            <p style="color:var(--danger); margin-bottom:0.5rem;">查無此精確字詞或網路連線異常。</p>
+            <a href="https://dict.revised.moe.edu.tw/search.jsp?md=1&word=${encodeURIComponent(q)}" target="_blank" style="color:var(--primary); font-weight:700; text-decoration:underline;">前往教育部國語辭典深入查詢 ↗</a>
+          </div>
+        `;
+      }
+    }
+
+    /* 4. 直行生詞簿渲染 (點擊隱藏背誦) */
+    function renderVocab() {
+      const container = document.getElementById('vocabListContainer');
+      container.innerHTML = appLessons.map(lesson => `
+        <div style="margin-bottom:1.5rem; border-bottom:1px dashed var(--border-color); padding-bottom:1rem;">
+          <h4 style="font-size:0.95rem; font-weight:800; color:var(--primary-dark); margin-bottom:0.5rem;">${lesson.title}</h4>
+          <div style="display:flex; flex-wrap:wrap; gap:0.75rem;">
+            ${lesson.chars.map(c => `
+              <div style="background:#fdfcf7; border:1px solid var(--border-color); border-radius:0.5rem; padding:0.5rem 0.75rem; display:flex; align-items:center; gap:0.5rem;">
+                <span onclick="this.style.color = this.style.color === 'transparent' ? 'inherit' : 'transparent'" style="font-size:1.3rem; font-weight:800; cursor:pointer; color:inherit;" title="點擊隱藏/顯示">${c.char}</span>
+                <span onclick="this.style.color = this.style.color === 'transparent' ? 'inherit' : 'transparent'" style="font-size:0.78rem; color:var(--primary); cursor:pointer;" title="點擊隱藏/顯示">(${c.zhuyin})</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* 5. 田字格聽寫單產生器 */
+    function renderWorksheetSelector() {
+      const selector = document.getElementById('worksheetSelector');
+      let html = '';
+      appLessons.forEach(l => {
+        l.chars.forEach((c) => {
+          html += `
+            <label style="display:flex; align-items:center; gap:0.4rem; font-size:0.78rem; cursor:pointer; background:#fdfcf7; padding:0.3rem 0.5rem; border-radius:0.3rem; border:1px solid var(--border-color);">
+              <input type="checkbox" class="ws-checkbox" value="${c.char}" checked onchange="updateWorksheetPreview()">
+              <span>${c.char} (${c.zhuyin})</span>
+            </label>
+          `;
+        });
+      });
+      selector.innerHTML = html;
+      updateWorksheetPreview();
+    }
+
+    function updateWorksheetPreview() {
+      const checkedBoxes = document.querySelectorAll('.ws-checkbox:checked');
+      const preview = document.getElementById('worksheetPreview');
+      
+      if (checkedBoxes.length === 0) {
+        preview.innerHTML = '<p style="text-align:center; color:var(--text-light);">請在上方勾選至少一個生字。</p>';
+        return;
+      }
+
+      let charsToPrint = [];
+      checkedBoxes.forEach(b => charsToPrint.push(b.value));
+
+      preview.innerHTML = `
+        <div style="text-align:center; margin-bottom:1.25rem;">
+          <h2 style="font-size:1.2rem; font-weight:800; color:#333;">國語隨堂聽寫與田字格練習單</h2>
+          <p style="font-size:0.75rem; color:#666; margin-top:0.2rem;">班級：_______ 姓名：_______ 座號：____</p>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:1.2rem;">
+          ${charsToPrint.map(ch => `
+            <div style="display:flex; align-items:center; gap:1rem; border-bottom:1px solid #eee; padding-bottom:0.75rem;">
+              <div style="font-size:1.5rem; font-weight:800; width:2rem; text-align:center;">${ch}</div>
+              <div class="tian-grid">
+                <div class="tian-cell"></div>
+                <div class="tian-cell"></div>
+                <div class="tian-cell"></div>
+                <div class="tian-cell"></div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function exportData() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appLessons, null, 2));
+      const a = document.createElement('a');
+      a.href = dataStr;
+      a.download = "五年級上冊康軒國語字典備份.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    function triggerImport() { document.getElementById('importFile').click(); }
+
+    function importData(e) {
+      const f = e.target.files[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = function(x) {
+        try {
+          appLessons = JSON.parse(x.target.result);
+          saveData();
+          populateBatchDropdown();
+          renderDict();
+          renderVocab();
+          renderWorksheetSelector();
+          alert("資料還原成功！");
+        } catch(err) { alert("檔案格式錯誤！"); }
+      };
+      r.readAsText(f);
+    }
+  </script>
+</body>
+</html>
+
