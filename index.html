@@ -115,7 +115,7 @@
     .tian-zhuyin-box { width: 20px; height: 50px; position: relative; }
     .tian-zhuyin-box::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px dotted #aaa; }
 
-    /* === 字典模組 (保留使用者要求) === */
+    /* === 字典模組 === */
     .dict-search-box { background: #fff; padding: 1.5rem; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 1rem; }
     .dict-search-title { display: flex; align-items: center; gap: 5px; font-weight: 800; color: var(--macaron-purple); margin-bottom: 1rem; font-size: 1.1rem;}
     .dict-input-wrap { display: flex; gap: 10px; }
@@ -147,8 +147,9 @@
       
       <div class="meta-input-group">
         <input type="text" id="custom-title-input" class="meta-input" value="五年級(上) 康軒版 國語生字" onblur="saveMetaData()">
+        
         <select id="title-selector" class="meta-select" onchange="updateTitleFromSelect()">
-          <option value="">--快速選填--</option>
+          <option value="">--快速選填年級--</option>
           <option value="一年級(上) 康軒版 國語生字">1年級 (上) 康軒</option>
           <option value="一年級(下) 康軒版 國語生字">1年級 (下) 康軒</option>
           <option value="二年級(上) 翰林版 國語生字">2年級 (上) 翰林</option>
@@ -156,6 +157,14 @@
           <option value="三年級(上) 南一版 國語生字">3年級 (上) 南一</option>
           <option value="三年級(下) 南一版 國語生字">3年級 (下) 南一</option>
           <option value="五年級(上) 康軒版 國語生字">5年級 (上) 康軒</option>
+        </select>
+
+        <!-- 🔊 語速調整選單 -->
+        <select id="speech-rate-selector" class="meta-select" style="border-color: var(--macaron-green);" title="調整語音朗讀速度">
+          <option value="0.5">🐢 慢速 (0.5x)</option>
+          <option value="0.75" selected>🚶 稍慢 (0.75x)</option>
+          <option value="1.0">🏃 正常 (1.0x)</option>
+          <option value="1.25">🐇 稍快 (1.25x)</option>
         </select>
       </div>
     </div>
@@ -490,16 +499,21 @@
       }
     }
 
-    // === 語音合成 ===
+    // === 語音合成 (含語速調整) ===
     let synth = window.speechSynthesis;
     let isDictating = false;
 
     function speakText(text) {
       if(synth.speaking) synth.cancel();
       if(!text) return;
+      
       let utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'zh-TW';
-      utterance.rate = 0.8;
+      
+      // 取得上方使用者選擇的語速
+      const rateSelector = document.getElementById('speech-rate-selector');
+      utterance.rate = rateSelector ? parseFloat(rateSelector.value) : 0.75;
+      
       synth.speak(utterance);
       return new Promise(resolve => {
         utterance.onend = resolve;
