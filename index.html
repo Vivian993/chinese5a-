@@ -1,800 +1,607 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="zh-TW">
 <head>
-<meta http-equiv=Content-Type content="text/html; charset=utf-8">
-<meta name=Generator content="Microsoft Word 15 (filtered)">
-<style>
-<!--
- /* Font Definitions */
- @font-face
-	{font-family:Courier;
-	panose-1:2 7 4 9 2 2 5 2 4 4;}
-@font-face
-	{font-family:"Cambria Math";
-	panose-1:2 4 5 3 5 4 6 3 2 4;}
-@font-face
-	{font-family:Georgia;
-	panose-1:2 4 5 2 5 4 5 2 3 3;}
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	font-size:11.0pt;
-	font-family:"Arial",sans-serif;}
-.MsoChpDefault
-	{font-family:"Arial",sans-serif;}
-@page WordSection1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.0in 1.0in 1.0in;}
-div.WordSection1
-	{page:WordSection1;}
--->
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>國語字典聽寫簿學習系統</title>
+ 
+  <!-- 📌 iPhone 桌面 App 圖示：它會去抓您上傳到 GitHub 的 custom-icon.png 照片 -->
+  <link rel="apple-touch-icon" href="custom-icon.png">
+  <link rel="icon" type="image/png" href="custom-icon.png">
 
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800;900&display=swap');
+   
+    :root {
+      /* 🍬 馬卡龍甜美色系 */
+      --bg-color: #FFF0F5; /* 淺粉背景 */
+      --card-bg: #FFFFFF;
+      --macaron-pink: #FFB7B2;
+      --macaron-blue: #B5EAD7;
+      --macaron-green: #E2F0CB;
+      --macaron-yellow: #FFDAC1;
+      --macaron-purple: #CBAACB;
+      --text-main: #5D5D5D;
+      --border-color: #F8D8E8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans TC', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 3rem; }
+   
+    /* === 標題選單區塊 (整合版) === */
+    header { background: linear-gradient(135deg, var(--card-bg) 0%, var(--border-color) 100%); padding: 1.5rem 1rem; border-bottom: 3px dashed var(--macaron-pink); box-shadow: 0 4px 10px rgba(255, 183, 178, 0.2); }
+    .header-container { max-width: 1000px; margin: 0 auto; display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; text-align: center;}
+    h1 { font-size: 1.6rem; font-weight: 900; color: #D48C9E; margin-bottom: 0.3rem;}
+   
+    /* 自定義按鈕樣式 (模擬選單) */
+    .btn-dropdown-wrap { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; width: 100%; margin-top: 10px;}
+    .btn-dropdown { background-color: white; color: var(--text-main); border: 2px solid #fff; border-radius: 20px; padding: 6px 15px; font-size: 0.95rem; font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: relative;}
+    .btn-dropdown:hover { border-color: var(--macaron-pink); }
+    .btn-dropdown.active { background-color: var(--macaron-pink); color: white; border-color: var(--macaron-pink); }
+    .btn-dropdown select { opacity: 0; position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: pointer;}
+    .btn-dropdown span.selected-value { margin-right: 5px; }
+
+    /* === 導覽列 === */
+    nav { background-color: white; border-bottom: 2px solid var(--border-color); position: sticky; top: 0; z-index: 50; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .nav-container { max-width: 1000px; margin: 0 auto; display: flex; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+    .nav-container::-webkit-scrollbar { display: none; }
+    .nav-btn { padding: 1rem 1.2rem; font-size: 0.95rem; font-weight: 800; background: none; border: none; border-bottom: 4px solid transparent; color: #A4A4A4; cursor: pointer; transition: 0.3s; }
+    .nav-btn.active { color: #D48C9E; border-bottom-color: var(--macaron-pink); }
+
+    main { max-width: 1000px; margin: 0 auto; padding: 1rem; flex-grow: 1; width: 100%; }
+
+    /* === 各課顏色循環 (1-12課) === */
+    .lesson-title-wrap.lesson-1 { --lesson-color: var(--macaron-pink); }
+    .lesson-title-wrap.lesson-2 { --lesson-color: var(--macaron-blue); }
+    .lesson-title-wrap.lesson-3 { --lesson-color: var(--macaron-green); }
+    .lesson-title-wrap.lesson-4 { --lesson-color: var(--macaron-yellow); }
+    .lesson-title-wrap.lesson-5 { --lesson-color: var(--macaron-purple); }
+    .lesson-title-wrap.lesson-6 { --lesson-color: var(--macaron-pink); }
+    .lesson-title-wrap.lesson-7 { --lesson-color: var(--macaron-blue); }
+    .lesson-title-wrap.lesson-8 { --lesson-color: var(--macaron-green); }
+    .lesson-title-wrap.lesson-9 { --lesson-color: var(--macaron-yellow); }
+    .lesson-title-wrap.lesson-10 { --lesson-color: var(--macaron-purple); }
+    .lesson-title-wrap.lesson-11 { --lesson-color: var(--macaron-pink); }
+    .lesson-title-wrap.lesson-12 { --lesson-color: var(--macaron-blue); }
+
+    /* === 共用按鈕與表單 === */
+    .btn { padding: 0.6rem 1.2rem; font-size: 0.9rem; font-weight: 700; border-radius: 20px; border: none; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .btn:active { transform: scale(0.95); }
+    .btn-pink { background-color: var(--macaron-pink); color: #fff; }
+    .btn-blue { background-color: var(--macaron-blue); color: #5D5D5D; }
+    .btn-green { background-color: var(--macaron-green); color: #5D5D5D; }
+    .btn-purple { background-color: var(--macaron-purple); color: #fff; }
+    .input-box, .textarea-box { width: 100%; border: 2px solid var(--border-color); border-radius: 12px; padding: 0.6rem; font-size: 0.9rem; outline: none; background: #fff; transition: 0.3s; }
+    .input-box:focus, .textarea-box:focus { border-color: var(--macaron-pink); }
+
+    /* === 字典查詢分頁 === */
+    .dict-search-box { background: #fff; padding: 1.5rem; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 1rem; }
+    .dict-search-title { display: flex; align-items: center; gap: 5px; font-weight: 800; color: var(--macaron-purple); margin-bottom: 1rem; font-size: 1.1rem;}
+    .dict-input-wrap { display: flex; gap: 10px; }
+    .dict-input { flex-grow: 1; border: 2px solid var(--macaron-purple); border-radius: 12px; padding: 0.6rem; outline: none; }
+    .dict-result-display { background: #fff; padding: 1.5rem; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .dict-result-title { display: flex; justify-content: space-between; align-items: center; font-weight: 800; color: var(--macaron-green); margin-bottom: 1rem; }
+    #dict-result-content { font-size: 1.3rem; line-height: 1.8; color: #444; } /* 字典字體加大 */
+
+    /* === 聽寫聽寫簿分頁 (套用田字格) === */
+    .grid-container { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; background: #fff; padding: 2rem; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .tian-char-wrap { position: relative; width: 70px; height: 70px; border: 2px solid #000; background: #fff; cursor: pointer; user-select: none; }
+    .tian-char-wrap::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; border-top: 1px dashed #999; }
+    .tian-char-wrap::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px dashed #999; }
+    .tian-char, .tian-zhuyin-text { position: absolute; text-align: center; font-family: 'Noto Sans TC', sans-serif; }
+    .tian-char { top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 2.2rem; font-weight: 900; color: #000; }
+    .tian-zhuyin { position: absolute; top: 0; right: 0; width: 30px; height: 70px; border-left: 1px solid #000; background: #fff; }
+    .tian-zhuyin::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px dashed #ccc; }
+    .tian-zhuyin-text { font-size: 1.1rem; line-height: 1.2; right: 2px; }
+    .tian-char.hidden-text { visibility: hidden; } /* 點擊後隱藏 */
+
+    /* === 資源連結分頁 === */
+    .resources-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+    .resource-card { background: #fff; padding: 1.2rem; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative; border: 2px solid #fff; transition: 0.3s; }
+    .resource-card:hover { border-color: var(--macaron-pink); transform: translateY(-3px); }
+    .resource-subject-tag { display: inline-block; padding: 4px 10px; border-radius: 12px; color: #fff; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }
+    .resource-title { font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 0.3rem; color: #D48C9E; cursor: pointer; border-radius: 10px; }
+    .resource-title.subject-active { padding: 4px 10px; }
+    .resource-desc { font-size: 0.9rem; color: #888; line-height: 1.6; }
+    .resource-link-area { margin-top: 1rem; }
+
+    /* === 列印設定 === */
+    @media print {
+      body { background: #fff !important; }
+      header, nav, .dict-search-box, .btn-group, .no-print, .dict-result-title { display: none !important; }
+      main { padding: 0 !important; }
+      .grid-container { box-shadow: none; padding: 0; }
+      .tian-char-wrap { border: 2px solid #000 !important; width: 50px; height: 50px; }
+      .tian-char { font-size: 1.8rem; }
+      .tian-zhuyin { width: 22px; height: 50px; border-left: 1px solid #000 !important; }
+      .tian-zhuyin-text { font-size: 0.9rem; }
+      /* 強制印出黑線 */
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
 </head>
+<body>
 
-<body lang=EN-US style='word-wrap:break-word'>
+  <!-- === 整合式標題選單 === -->
+  <header class="no-print">
+    <div class="header-container">
+      <h1>國語字典聽寫簿學習系統</h1>
+      <div class="btn-dropdown-wrap">
+        <button class="btn-dropdown active">年級 🔽 <span class="selected-value">ㄧ</span></button>
+        <button class="btn-dropdown">學期 🔽 <span class="selected-value">上</span></button>
+        <button class="btn-dropdown">版本 🔽 <span class="selected-value">康軒</span></button>
+      </div>
+    </div>
+  </header>
 
-<div class=WordSection1>
+  <!-- === 導覽列 === -->
+  <nav class="no-print">
+    <div class="nav-container">
+      <button class="nav-btn active" onclick="switchTab('tab-lessons')">📖 課文生字與圈詞</button>
+      <button class="nav-btn" onclick="switchTab('tab-dict')">🔍 線上查字典</button>
+      <button class="nav-btn" onclick="switchTab('tab-grid')">✍️ 聽寫簿視圖</button>
+      <button class="nav-btn" onclick="switchTab('tab-test')">🎧 考試與聽寫</button>
+      <button class="nav-btn" onclick="switchTab('tab-links')">🔗 資源與連結</button>
+      <button class="nav-btn" onclick="switchTab('tab-backup')">⚙️ 備份與還原</button>
+    </div>
+  </nav>
 
-<p class=MsoNormal style='border:none'><span style='font-family:Courier'>&lt;!DOCTYPE
-html&gt;<br>
-&lt;html lang=&quot;zh-TW&quot;&gt;<br>
-&lt;head&gt;<br>
-  &lt;meta charset=&quot;UTF-8&quot;&gt;<br>
-  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,
-initial-scale=1.0, maximum-scale=1.0, user-scalable=no&quot;&gt;<br>
-  &lt;title&gt;國語字典聽寫簿學習系統&lt;/title&gt;<br>
-  <br>
-  &lt;!-- &#128204; iPhone 桌面 App 圖示：它會去抓您上傳到 GitHub 的 custom-icon.png 照片
---&gt;<br>
-  &lt;link rel=&quot;apple-touch-icon&quot; href=&quot;custom-icon.png&quot;&gt;<br>
-  &lt;link rel=&quot;icon&quot; type=&quot;image/png&quot;
-href=&quot;custom-icon.png&quot;&gt;<br>
-<br>
-  &lt;style&gt;<br>
-    @import
-url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800;900&amp;display=swap');<br>
-    <br>
-    :root {<br>
-      /* &#127852; 馬卡龍甜美色系 */<br>
-      --bg-color: #FFF0F5; /* 淺粉背景 */<br>
-      --card-bg: #FFFFFF;<br>
-      --macaron-pink: #FFB7B2;<br>
-      --macaron-blue: #B5EAD7;<br>
-      --macaron-green: #E2F0CB;<br>
-      --macaron-yellow: #FFDAC1;<br>
-      --macaron-purple: #CBAACB;<br>
-      --text-main: #5D5D5D;<br>
-      --border-color: #F8D8E8;<br>
-    }<br>
-<br>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans
-TC', sans-serif; -webkit-tap-highlight-color: transparent; }<br>
-    body { background-color: var(--bg-color); color: var(--text-main);
-min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 3rem;
-}<br>
-    <br>
-    /* === 標題選單區塊 (整合版) === */<br>
-    header { background: linear-gradient(135deg, var(--card-bg) 0%,
-var(--border-color) 100%); padding: 1.5rem 1rem; border-bottom: 3px dashed
-var(--macaron-pink); box-shadow: 0 4px 10px rgba(255, 183, 178, 0.2); }<br>
-    .header-container { max-width: 1000px; margin: 0 auto; display: flex;
-align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px;
-text-align: center;}<br>
-    h1 { font-size: 1.6rem; font-weight: 900; color: #D48C9E; margin-bottom:
-0.3rem;}<br>
-    <br>
-    /* 自定義按鈕樣式 (模擬選單) */<br>
-    .btn-dropdown-wrap { display: flex; gap: 8px; flex-wrap: wrap;
-justify-content: center; width: 100%; margin-top: 10px;}<br>
-    .btn-dropdown { background-color: white; color: var(--text-main); border:
-2px solid #fff; border-radius: 20px; padding: 6px 15px; font-size: 0.95rem;
-font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: 0 2px 5px
-rgba(0,0,0,0.1); position: relative;}<br>
-    .btn-dropdown:hover { border-color: var(--macaron-pink); }<br>
-    .btn-dropdown.active { background-color: var(--macaron-pink); color: white;
-border-color: var(--macaron-pink); }<br>
-    .btn-dropdown select { opacity: 0; position: absolute; top: 0; left: 0;
-width: 100%; height: 100%; cursor: pointer;}<br>
-    .btn-dropdown span.selected-value { margin-right: 5px; }<br>
-<br>
-    /* === 導覽列 === */<br>
-    nav { background-color: white; border-bottom: 2px solid
-var(--border-color); position: sticky; top: 0; z-index: 50; box-shadow: 0 2px
-8px rgba(0,0,0,0.05); }<br>
-    .nav-container { max-width: 1000px; margin: 0 auto; display: flex;
-overflow-x: auto; white-space: nowrap; scrollbar-width: none; }<br>
-    .nav-container::-webkit-scrollbar { display: none; }<br>
-    .nav-btn { padding: 1rem 1.2rem; font-size: 0.95rem; font-weight: 800; background:
-none; border: none; border-bottom: 4px solid transparent; color: #A4A4A4;
-cursor: pointer; transition: 0.3s; }<br>
-    .nav-btn.active { color: #D48C9E; border-bottom-color: var(--macaron-pink);
-}<br>
-<br>
-    main { max-width: 1000px; margin: 0 auto; padding: 1rem; flex-grow: 1;
-width: 100%; }<br>
-<br>
-    /* === 各課顏色循環 (1-12課) === */<br>
-    .lesson-title-wrap.lesson-1 { --lesson-color: var(--macaron-pink); }<br>
-    .lesson-title-wrap.lesson-2 { --lesson-color: var(--macaron-blue); }<br>
-    .lesson-title-wrap.lesson-3 { --lesson-color: var(--macaron-green); }<br>
-    .lesson-title-wrap.lesson-4 { --lesson-color: var(--macaron-yellow); }<br>
-    .lesson-title-wrap.lesson-5 { --lesson-color: var(--macaron-purple); }<br>
-    .lesson-title-wrap.lesson-6 { --lesson-color: var(--macaron-pink); }<br>
-    .lesson-title-wrap.lesson-7 { --lesson-color: var(--macaron-blue); }<br>
-    .lesson-title-wrap.lesson-8 { --lesson-color: var(--macaron-green); }<br>
-    .lesson-title-wrap.lesson-9 { --lesson-color: var(--macaron-yellow); }<br>
-    .lesson-title-wrap.lesson-10 { --lesson-color: var(--macaron-purple); }<br>
-    .lesson-title-wrap.lesson-11 { --lesson-color: var(--macaron-pink); }<br>
-    .lesson-title-wrap.lesson-12 { --lesson-color: var(--macaron-blue); }<br>
-<br>
-    /* === 共用按鈕與表單 === */<br>
-    .btn { padding: 0.6rem 1.2rem; font-size: 0.9rem; font-weight: 700;
-border-radius: 20px; border: none; cursor: pointer; transition: 0.2s; display:
-inline-flex; align-items: center; justify-content: center; gap: 5px;
-box-shadow: 0 2px 5px rgba(0,0,0,0.1); }<br>
-    .btn:active { transform: scale(0.95); }<br>
-    .btn-pink { background-color: var(--macaron-pink); color: #fff; }<br>
-    .btn-blue { background-color: var(--macaron-blue); color: #5D5D5D; }<br>
-    .btn-green { background-color: var(--macaron-green); color: #5D5D5D; }<br>
-    .btn-purple { background-color: var(--macaron-purple); color: #fff; }<br>
-    .input-box, .textarea-box { width: 100%; border: 2px solid
-var(--border-color); border-radius: 12px; padding: 0.6rem; font-size: 0.9rem;
-outline: none; background: #fff; transition: 0.3s; }<br>
-    .input-box:focus, .textarea-box:focus { border-color: var(--macaron-pink);
-}<br>
-<br>
-    /* === 字典查詢分頁 === */<br>
-    .dict-search-box { background: #fff; padding: 1.5rem; border-radius: 20px;
-box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 1rem; }<br>
-    .dict-search-title { display: flex; align-items: center; gap: 5px;
-font-weight: 800; color: var(--macaron-purple); margin-bottom: 1rem; font-size:
-1.1rem;}<br>
-    .dict-input-wrap { display: flex; gap: 10px; }<br>
-    .dict-input { flex-grow: 1; border: 2px solid var(--macaron-purple);
-border-radius: 12px; padding: 0.6rem; outline: none; }<br>
-    .dict-result-display { background: #fff; padding: 1.5rem; border-radius:
-20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }<br>
-    .dict-result-title { display: flex; justify-content: space-between;
-align-items: center; font-weight: 800; color: var(--macaron-green);
-margin-bottom: 1rem; }<br>
-    #dict-result-content { font-size: 1.3rem; line-height: 1.8; color: #444; }
-/* 字典字體加大 */<br>
-<br>
-    /* === 聽寫聽寫簿分頁 (套用田字格) === */<br>
-    .grid-container { display: flex; flex-wrap: wrap; gap: 10px;
-justify-content: center; background: #fff; padding: 2rem; border-radius: 20px;
-box-shadow: 0 4px 10px rgba(0,0,0,0.05); }<br>
-    .tian-char-wrap { position: relative; width: 70px; height: 70px; border:
-2px solid #000; background: #fff; cursor: pointer; user-select: none; }<br>
-    .tian-char-wrap::before { content: ''; position: absolute; top: 50%; left:
-0; right: 0; border-top: 1px dashed #999; }<br>
-    .tian-char-wrap::after { content: ''; position: absolute; left: 50%; top:
-0; bottom: 0; border-left: 1px dashed #999; }<br>
-    .tian-char, .tian-zhuyin-text { position: absolute; text-align: center;
-font-family: 'Noto Sans TC', sans-serif; }<br>
-    .tian-char { top: 50%; left: 50%; transform: translate(-50%, -50%);
-font-size: 2.2rem; font-weight: 900; color: #000; }<br>
-    .tian-zhuyin { position: absolute; top: 0; right: 0; width: 30px; height:
-70px; border-left: 1px solid #000; background: #fff; }<br>
-    .tian-zhuyin::after { content: ''; position: absolute; left: 50%; top: 0;
-bottom: 0; border-left: 1px dashed #ccc; }<br>
-    .tian-zhuyin-text { font-size: 1.1rem; line-height: 1.2; right: 2px; }<br>
-    .tian-char.hidden-text { visibility: hidden; } /* 點擊後隱藏 */<br>
-<br>
-    /* === 資源連結分頁 === */<br>
-    .resources-grid { display: grid; grid-template-columns: repeat(auto-fill,
-minmax(280px, 1fr)); gap: 1rem; }<br>
-    .resource-card { background: #fff; padding: 1.2rem; border-radius: 20px;
-box-shadow: 0 4px 10px rgba(0,0,0,0.05); position: relative; border: 2px solid
-#fff; transition: 0.3s; }<br>
-    .resource-card:hover { border-color: var(--macaron-pink); transform:
-translateY(-3px); }<br>
-    .resource-subject-tag { display: inline-block; padding: 4px 10px;
-border-radius: 12px; color: #fff; font-size: 0.8rem; font-weight: 800;
-text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem; }<br>
-    .resource-title { font-size: 1.1rem; font-weight: 800; color:
-var(--text-main); margin-bottom: 0.3rem; color: #D48C9E; cursor: pointer;
-border-radius: 10px; }<br>
-    .resource-title.subject-active { padding: 4px 10px; }<br>
-    .resource-desc { font-size: 0.9rem; color: #888; line-height: 1.6; }<br>
-    .resource-link-area { margin-top: 1rem; }<br>
-<br>
-    /* === 列印設定 === */<br>
-    @media print {<br>
-      body { background: #fff !important; }<br>
-      header, nav, .dict-search-box, .btn-group, .no-print, .dict-result-title
-{ display: none !important; }<br>
-      main { padding: 0 !important; }<br>
-      .grid-container { box-shadow: none; padding: 0; }<br>
-      .tian-char-wrap { border: 2px solid #000 !important; width: 50px; height:
-50px; }<br>
-      .tian-char { font-size: 1.8rem; }<br>
-      .tian-zhuyin { width: 22px; height: 50px; border-left: 1px solid #000
-!important; }<br>
-      .tian-zhuyin-text { font-size: 0.9rem; }<br>
-      /* 強制印出黑線 */<br>
-      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }<br>
-    }<br>
-  &lt;/style&gt;<br>
-&lt;/head&gt;<br>
-&lt;body&gt;<br>
-<br>
-  &lt;!-- === 整合式標題選單 === --&gt;<br>
-  &lt;header class=&quot;no-print&quot;&gt;<br>
-    &lt;div class=&quot;header-container&quot;&gt;<br>
-      &lt;h1&gt;國語字典聽寫簿學習系統&lt;/h1&gt;<br>
-      &lt;div class=&quot;btn-dropdown-wrap&quot;&gt;<br>
-        &lt;button class=&quot;btn-dropdown active&quot;&gt;年級 &#128317;
-&lt;span class=&quot;selected-value&quot;&gt;ㄧ&lt;/span&gt;&lt;/button&gt;<br>
-        &lt;button class=&quot;btn-dropdown&quot;&gt;學期 &#128317; &lt;span
-class=&quot;selected-value&quot;&gt;上&lt;/span&gt;&lt;/button&gt;<br>
-        &lt;button class=&quot;btn-dropdown&quot;&gt;版本 &#128317; &lt;span
-class=&quot;selected-value&quot;&gt;康軒&lt;/span&gt;&lt;/button&gt;<br>
-      &lt;/div&gt;<br>
-    &lt;/div&gt;<br>
-  &lt;/header&gt;<br>
-<br>
-  &lt;!-- === 導覽列 === --&gt;<br>
-  &lt;nav class=&quot;no-print&quot;&gt;<br>
-    &lt;div class=&quot;nav-container&quot;&gt;<br>
-      &lt;button class=&quot;nav-btn active&quot;
-onclick=&quot;switchTab('tab-lessons')&quot;&gt;&#128214; 課文生字與圈詞&lt;/button&gt;<br>
-      &lt;button class=&quot;nav-btn&quot;
-onclick=&quot;switchTab('tab-dict')&quot;&gt;&#128269; 線上查字典&lt;/button&gt;<br>
-      &lt;button class=&quot;nav-btn&quot; onclick=&quot;switchTab('tab-grid')&quot;&gt;✍️
-聽寫簿視圖&lt;/button&gt;<br>
-      &lt;button class=&quot;nav-btn&quot;
-onclick=&quot;switchTab('tab-test')&quot;&gt;&#127911; 考試與聽寫&lt;/button&gt;<br>
-      &lt;button class=&quot;nav-btn&quot;
-onclick=&quot;switchTab('tab-links')&quot;&gt;&#128279; 資源與連結&lt;/button&gt;<br>
-      &lt;button class=&quot;nav-btn&quot; onclick=&quot;switchTab('tab-backup')&quot;&gt;⚙️
-備份與還原&lt;/button&gt;<br>
-    &lt;/div&gt;<br>
-  &lt;/nav&gt;<br>
-<br>
-  &lt;main&gt;<br>
-    &lt;!-- === 視圖 1: 課文生字與圈詞 === --&gt;<br>
-    &lt;div id=&quot;tab-lessons&quot; class=&quot;tab-content&quot;&gt;<br>
-      &lt;div id=&quot;lessons-container&quot;&gt;<br>
-        &lt;!-- 這裡會由 JS 動態生成各課內容 --&gt;<br>
-      &lt;/div&gt;<br>
-    &lt;/div&gt;<br>
-<br>
-    &lt;!-- === 視圖 2: 線上查字典 === --&gt;<br>
-    &lt;div id=&quot;tab-dict&quot; class=&quot;tab-content hidden&quot;&gt;<br>
-      &lt;div class=&quot;dict-search-box no-print&quot;&gt;<br>
-        &lt;div class=&quot;dict-search-title&quot;&gt;<br>
-          &lt;svg xmlns=&quot;http://www.w3.org/2000/svg&quot;
-width=&quot;16&quot; height=&quot;16&quot; viewBox=&quot;0 0 24 24&quot;
-fill=&quot;none&quot; stroke=&quot;currentColor&quot;
-stroke-width=&quot;3&quot; stroke-linecap=&quot;round&quot;
-stroke-linejoin=&quot;round&quot;&gt;&lt;circle cx=&quot;11&quot;
-cy=&quot;11&quot; r=&quot;8&quot;/&gt;&lt;path d=&quot;m21
-21-4.3-4.3&quot;/&gt;&lt;/svg&gt;<br>
-          &lt;span&gt;教育部萌典即時查詢&lt;/span&gt;<br>
-        &lt;/div&gt;<br>
-        &lt;div class=&quot;dict-input-wrap&quot;&gt;<br>
-          &lt;input type=&quot;text&quot; id=&quot;dict-query-input&quot;
-placeholder=&quot;輸入單字，例如：瘧&quot; class=&quot;dict-input&quot;
-onkeypress=&quot;if(event.key==='Enter') searchDict()&quot;&gt;<br>
-          &lt;button onclick=&quot;searchDict()&quot; class=&quot;btn&quot;
-style=&quot;background-color: var(--macaron-purple); color:#fff;&quot;&gt;線上查字&lt;/button&gt;<br>
-        &lt;/div&gt;<br>
-      &lt;/div&gt;<br>
-      &lt;div class=&quot;dict-result-display&quot;&gt;<br>
-        &lt;div class=&quot;dict-result-title&quot;&gt;<br>
-          &lt;span&gt;&#128269; 字典釋義結果：&lt;/span&gt;<br>
-          &lt;button id=&quot;btn-copy-dict&quot; class=&quot;btn
-btn-blue&quot; onclick=&quot;copyDictResult()&quot;&gt;&#128203; 複製&lt;/button&gt;<br>
-        &lt;/div&gt;<br>
-        &lt;div id=&quot;dict-result-content&quot;&gt;請輸入單字查詢&lt;/div&gt;<br>
-      &lt;/div&gt;<br>
-    &lt;/div&gt;<br>
-<br>
-    &lt;!-- === 視圖 3: 聽寫簿視圖 (套用田字格) === --&gt;<br>
-    &lt;div id=&quot;tab-grid&quot; class=&quot;tab-content hidden
-grid-view&quot;&gt;<br>
-      &lt;div class=&quot;no-print&quot; style=&quot;margin-bottom: 1rem;
-display:flex; gap:10px;&quot;&gt;<br>
-        &lt;button class=&quot;btn btn-pink&quot;
-onclick=&quot;window.print()&quot;&gt;&#128424;️ 列印網格聽寫簿&lt;/button&gt;<br>
-      &lt;/div&gt;<br>
-      &lt;div id=&quot;grid-render-area&quot;
-class=&quot;grid-container&quot;&gt;<br>
-        &lt;!-- JS 動態生成田字格 --&gt;<br>
-      &lt;/div&gt;<br>
-    &lt;/div&gt;<br>
-<br>
-    &lt;!-- === 視圖 4: 考試與聽寫 === --&gt;<br>
-    &lt;div id=&quot;tab-test&quot; class=&quot;tab-content hidden
-dictation-view&quot;&gt;<br>
-      &lt;div class=&quot;dictation-wrapper&quot;&gt;<br>
-        &lt;div class=&quot;test-controls no-print&quot;&gt;<br>
-          &lt;h2&gt;國語聽寫/考試系統&lt;/h2&gt;<br>
-          &lt;div class=&quot;audio-panel&quot;&gt;<br>
-            &lt;button class=&quot;btn btn-purple&quot; onclick=&quot;speakCurrentTest()&quot;&gt;&#127911;
-朗讀題目&lt;/button&gt;<br>
-            &lt;button class=&quot;btn btn-green&quot;
-onclick=&quot;speakCurrentTerm()&quot;&gt;&#128218; 朗讀選定圈詞&lt;/button&gt;<br>
-          &lt;/div&gt;<br>
-        &lt;/div&gt;<br>
-        &lt;div id=&quot;test-grid-container&quot;
-class=&quot;test-content&quot;&gt;<br>
-          &lt;!-- JS 動態生成聽寫格子 --&gt;<br>
-        &lt;/div&gt;<br>
-      &lt;/div&gt;<br>
-    &lt;/div&gt;<br>
-<br>
-    &lt;!-- === 視圖 5: 資源與連結 === --&gt;<br>
-    &lt;div id=&quot;tab-links&quot; class=&quot;tab-content hidden&quot;&gt;<br>
-      &lt;div class=&quot;link-filter no-print&quot; style=&quot;margin-bottom:
-1rem;&quot;&gt;<br>
-        &lt;button class=&quot;btn-dropdown active&quot;
-onclick=&quot;filterLinks('all')&quot;&gt;全部科目&lt;/button&gt;<br>
-        &lt;button class=&quot;btn-dropdown&quot; onclick=&quot;filterLinks('國語')&quot;&gt;國語&lt;/button&gt;<br>
-        &lt;button class=&quot;btn-dropdown&quot; onclick=&quot;filterLinks('數學')&quot;&gt;數學&lt;/button&gt;<br>
-        &lt;button class=&quot;btn-dropdown&quot; onclick=&quot;filterLinks('社會')&quot;&gt;社會&lt;/button&gt;<br>
-        &lt;button class=&quot;btn-dropdown&quot; onclick=&quot;filterLinks('其它')&quot;&gt;其它&lt;/button&gt;<br>
-      &lt;/div&gt;<br>
-      &lt;div id=&quot;links-container&quot;
-class=&quot;resources-grid&quot;&gt;<br>
-        &lt;!-- JS 動態生成資源卡片 --&gt;<br>
-      &lt;/div&gt;<br>
-    &lt;/div&gt;<br>
-<br>
-    &lt;!-- === 視圖 6: 備份與還原 === --&gt;<br>
-    &lt;div id=&quot;tab-backup&quot; class=&quot;tab-content hidden
-no-print&quot;&gt;<br>
-      &lt;div class=&quot;settings-panel&quot;&gt;<br>
-        &lt;h2&gt;⚙️ 資料管理中心&lt;/h2&gt;<br>
-        &lt;div class=&quot;settings-info&quot;&gt;您修改的所有內容都自動存在手機/iPad上。&lt;/div&gt;<br>
-        &lt;div class=&quot;btn-group-column&quot;&gt;<br>
-          &lt;button class=&quot;btn btn-blue&quot; onclick=&quot;exportData()&quot;&gt;&#128228;
-備份資料 (JSON匯出)&lt;/button&gt;<br>
-          &lt;button class=&quot;btn btn-pink&quot;
-onclick=&quot;document.getElementById('import-file').click()&quot;&gt;&#128229;
-還原資料 (JSON匯入)&lt;/button&gt;<br>
-          &lt;input type=&quot;file&quot; id=&quot;import-file&quot;
-accept=&quot;.json&quot; style=&quot;display: none;&quot;
-onchange=&quot;importData(event)&quot;&gt;<br>
-        &lt;/div&gt;<br>
-        &lt;div class=&quot;settings-danger-zone&quot;&gt;<br>
-          &lt;button class=&quot;btn btn-purple&quot;
-onclick=&quot;resetToDefault()&quot;&gt;⚠️ 恢復原始範例 (清除所有修改)&lt;/button&gt;<br>
-        &lt;/div&gt;<br>
-      &lt;/div&gt;<br>
-    &lt;/div&gt;<br>
-<br>
-  &lt;/main&gt;<br>
-<br>
-  &lt;script&gt;<br>
-    // === 預設範例資料：康軒國語 五年級上學期 ===<br>
-    const defaultData = {<br>
-      lessons: [<br>
-        { id: 1, title: &quot;第一課： 蚊帳大使&quot;, summary: &quot;請輸入第一課課文大意...&quot;,<br>
-          batchInput: &quot;蚊,ㄨㄣˊ,虫部,蚊子,蚊帳\n帳,ㄓㄤˋ,巾部,蚊帳,帳篷\n洲,ㄓㄡ,水部,非洲,亞洲&quot;,
-// 批次輸入範例<br>
-          characters: [<br>
-            { id: 1, char: &quot;蚊&quot;, zhuyin: &quot;ㄨㄣˊ&quot;, radical:
-&quot;虫&quot;, note: &quot;蚊子、蚊帳&quot;, terms: &quot;蚊子、蚊帳、瘧蚊&quot;,
-tingxieVisible: true },<br>
-            { id: 2, char: &quot;帳&quot;, zhuyin: &quot;ㄓㄤˋ&quot;, radical:
-&quot;巾&quot;, note: &quot;蚊帳、帳篷&quot;, terms: &quot;蚊帳、帳篷、算帳&quot;,
-tingxieVisible: true },<br>
-            { id: 3, char: &quot;洲&quot;, zhuyin: &quot;ㄓㄡ&quot;, radical:
-&quot;水&quot;, note: &quot;非洲、亞洲&quot;, terms: &quot;非洲、亞洲、大洋洲&quot;,
-tingxieVisible: true }<br>
-          ]<br>
-        },<br>
-        { id: 2, title: &quot;第二課： 走過大地傷痕&quot;, summary: &quot;請輸入第二課課文大意...&quot;,
-batchInput: &quot;&quot;, characters: [] },<br>
-        { id: 3, title: &quot;第三課： 迎向光的植物&quot;, summary: &quot;請輸入第三課課文大意...&quot;,
-batchInput: &quot;&quot;, characters: [] },<br>
-        { id: 4, title: &quot;第四課： 智救羊群&quot;, summary: &quot;請輸入第四課課文大意...&quot;,
-batchInput: &quot;&quot;, characters: [] },<br>
-        { id: 5, title: &quot;第五課： 送愛到南非&quot;, summary: &quot;請輸入第五課課文大意...&quot;,
-batchInput: &quot;&quot;, characters: [] },<br>
-        { id: 6, title: &quot;第六課： 表演藝術饗宴&quot;, summary: &quot;請輸入第六課課文大意...&quot;,
-batchInput: &quot;&quot;, characters: [] },<br>
-        { id: 7, title: &quot;第七課： 珍珠試煉&quot;, summary: &quot;請輸入第七課課文大意...&quot;,
-batchInput: &quot;&quot;, characters: [] },<br>
-        { id: 8, title: &quot;第八課： 戰火下的溫情&quot;, summary: &quot;請輸入第八課課文大意...&quot;,
-batchInput: &quot;&quot;, characters: [] },<br>
-        { id: 9, title: &quot;第九課： 探索植物的秘密&quot;, summary: &quot;請輸入第九課課文大意...&quot;,
-batchInput: &quot;&quot;, characters: [] },<br>
-        { id: 10, title: &quot;第十課： 古詩選&quot;, summary: &quot;請輸入第十課課文大意...&quot;,
-batchInput: &quot;&quot;, characters: [] },<br>
-        { id: 11, title: &quot;第十一課： 被遺忘的奇蹟&quot;, summary: &quot;請輸入第十一課課文大意...&quot;,
-batchInput: &quot;&quot;, characters: [] },<br>
-        { id: 12, title: &quot;第十二課：魯賓遜漂流記&quot;, summary: &quot;請輸入第十二課課文大意...&quot;,
-batchInput: &quot;&quot;, characters: [] }<br>
-      ],<br>
-      currentSettings: { grade: &quot;ㄧ&quot;, semester: &quot;上&quot;,
-publisher: &quot;康軒&quot; },<br>
-      links: [<br>
-        { id: 1, subject: &quot;國語&quot;, title: &quot;萌典&quot;, desc: &quot;數位國語辭典，非常好用。&quot;,
-url: &quot;https://www.moedict.tw/&quot; },<br>
-        { id: 2, subject: &quot;其它&quot;, title: &quot;波波注音&quot;, desc: &quot;參考格線樣式的好資源。&quot;,
-url: &quot;https://bopodoc.com/worksheets/&quot; }<br>
-      ]<br>
-    };<br>
-<br>
-    let appData = {};<br>
-<br>
-    // === 初始化與存檔 ===<br>
-    window.onload = function() {<br>
-      loadData();<br>
-      renderAllTabs();<br>
-    };<br>
-<br>
-    window.onbeforeunload = function() {<br>
-      saveData();<br>
-    };<br>
-<br>
-    function loadData() {<br>
-      const stored = localStorage.getItem('MandarinDictTingxieData');<br>
-      if (stored) {<br>
-        appData = JSON.parse(stored);<br>
-      } else {<br>
-        appData = defaultData; // Deep copy required in production<br>
-      }<br>
-    }<br>
-<br>
-    function saveData() {<br>
-      localStorage.setItem('MandarinDictTingxieData', JSON.stringify(appData));<br>
-    }<br>
-<br>
-    function renderAllTabs() {<br>
-      renderLessonsTab();<br>
-      renderDictTab();<br>
-      renderGridTab();<br>
-      renderTestTab();<br>
-      renderLinksTab();<br>
-    }<br>
-<br>
-    // === 切換分頁 ===<br>
-    function switchTab(tabId) {<br>
-      document.querySelectorAll('.tab-content').forEach(el =&gt;
-el.classList.add('hidden'));<br>
-      document.querySelectorAll('.nav-btn').forEach(el =&gt;
-el.classList.remove('active'));<br>
-      <br>
-      document.getElementById(tabId).classList.remove('hidden');<br>
-      event.target.classList.add('active');<br>
-    }<br>
-<br>
-    // === &#128214; 視圖 1: 課文生字與圈詞 ===<br>
-    function renderLessonsTab() {<br>
-      const container = document.getElementById('lessons-container');<br>
-      container.innerHTML = '';<br>
-<br>
-      appData.lessons.forEach(lesson =&gt; {<br>
-        const lessonDiv = document.createElement('div');<br>
-        lessonDiv.className = `lesson-title-wrap lesson-${lesson.id}`;<br>
-        lessonDiv.innerHTML = `<br>
-          &lt;div class=&quot;lesson-header no-print&quot;&gt;<br>
-            &lt;h2 class=&quot;lesson-title&quot; style=&quot;padding: 5px
-10px; border-radius: 10px;&quot;&gt;${lesson.title}&lt;/h2&gt;<br>
-          &lt;/div&gt;<br>
-          &lt;div class=&quot;lesson-body print-show&quot;&gt;<br>
-            &lt;textarea class=&quot;textarea-box textarea-summary
-print-show&quot; placeholder=&quot;請輸入課文大意...&quot;
-onblur=&quot;updateLessonSummary(${lesson.id},
-this.value)&quot;&gt;${lesson.summary}&lt;/textarea&gt;<br>
-            <br>
-            &lt;div class=&quot;char-controls no-print&quot;&gt;<br>
-              &lt;h3&gt;批量輸入生字/部首/圈詞&lt;/h3&gt;<br>
-              &lt;p class=&quot;batch-input-desc&quot;&gt;格式：生字,注音,部首,圈詞1,圈詞2 (每行一字)&lt;/p&gt;<br>
-              &lt;textarea id=&quot;batch-input-${lesson.id}&quot;
-class=&quot;textarea-box textarea-batch no-print&quot;
-rows=&quot;5&quot;&gt;${lesson.batchInput || &quot;&quot;}&lt;/textarea&gt;<br>
-              &lt;button class=&quot;btn btn-green no-print&quot;
-onclick=&quot;batchInputCharacters(${lesson.id})&quot;&gt;批次填入此課生字&lt;/button&gt;<br>
-            &lt;/div&gt;<br>
-            <br>
-            &lt;div class=&quot;char-details print-show&quot;&gt;<br>
-              &lt;h3&gt;此課生字表與圈詞 (可點擊修改)&lt;/h3&gt;<br>
-              &lt;div id=&quot;char-list-${lesson.id}&quot;
-class=&quot;char-list-grid print-show&quot;&gt;<br>
-                ${lesson.characters.map(c =&gt; renderCharacterCard(lesson.id,
-c)).join('')}<br>
-              &lt;/div&gt;<br>
-            &lt;/div&gt;<br>
-          &lt;/div&gt;<br>
-        `;<br>
-        container.appendChild(lessonDiv);<br>
-      });<br>
-    }<br>
-<br>
-    function renderCharacterCard(lessonId, charObj) {<br>
-      return `<br>
-        &lt;div class=&quot;char-card print-show&quot;&gt;<br>
-          &lt;div class=&quot;char-id-row&quot;&gt;&lt;span&gt;${charObj.char}&lt;/span&gt;
-| ${charObj.zhuyin} | ${charObj.radical}部&lt;/div&gt;<br>
-          &lt;div class=&quot;char-terms-row&quot;&gt;圈詞聽寫 (可修改)：<br>
-            &lt;input type=&quot;text&quot; class=&quot;input-box input-terms
-print-show&quot; value=&quot;${charObj.note}&quot;
-onblur=&quot;updateCharacterNote(${lessonId}, ${charObj.id},
-this.value)&quot;&gt;<br>
-          &lt;/div&gt;<br>
-        &lt;/div&gt;<br>
-      `;<br>
-    }<br>
-<br>
-    function updateLessonSummary(lessonId, summary) {<br>
-      const lesson = appData.lessons.find(l =&gt; l.id === lessonId);<br>
-      if (lesson) lesson.summary = summary;<br>
-    }<br>
-<br>
-    function updateCharacterNote(lessonId, charId, note) {<br>
-      const lesson = appData.lessons.find(l =&gt; l.id === lessonId);<br>
-      if (lesson) {<br>
-        const character = lesson.characters.find(c =&gt; c.id === charId);<br>
-        if (character) {<br>
-          character.note = note;<br>
-          character.terms = note; // 圈詞與 note 保持一致<br>
-        }<br>
-      }<br>
-    }<br>
-<br>
-    // === 一鍵批次輸入生字 ===<br>
-    function batchInputCharacters(lessonId) {<br>
-      const lesson = appData.lessons.find(l =&gt; l.id === lessonId);<br>
-      const inputArea = document.getElementById(`batch-input-${lessonId}`);<br>
-      if (!lesson || !inputArea) return;<br>
-<br>
-      const inputText = inputArea.value.trim();<br>
-      if (!inputText) return;<br>
-<br>
-      // 儲存輸入文本<br>
-      lesson.batchInput = inputText;<br>
-<br>
-      const lines = inputText.split('\n');<br>
-      lesson.characters = []; // 清空現有生字<br>
-<br>
-      lines.forEach((line, index) =&gt; {<br>
-        const parts = line.split(',');<br>
-        if (parts.length &lt; 4) return; // 格式不符<br>
-<br>
-        const charObj = {<br>
-          id: index + 1,<br>
-          char: parts[0].trim(),<br>
-          zhuyin: parts[1].trim(),<br>
-          radical: parts[2].trim(),<br>
-          note: parts.slice(3).join('、').trim(), // 圈詞1,圈詞2 -&gt; 圈詞1、圈詞2<br>
-          terms: parts.slice(3).join('、').trim(),<br>
-          tingxieVisible: true<br>
-        };<br>
-        lesson.characters.push(charObj);<br>
-      });<br>
-<br>
-      renderLessonCharList(lessonId); // 重新渲染此課生字列表<br>
-    }<br>
-<br>
-    function renderLessonCharList(lessonId) {<br>
-      const lesson = appData.lessons.find(l =&gt; l.id === lessonId);<br>
-      const listContainer = document.getElementById(`char-list-${lessonId}`);<br>
-      if (lesson &amp;&amp; listContainer) {<br>
-        listContainer.innerHTML = lesson.characters.map(c =&gt;
-renderCharacterCard(lessonId, c)).join('');<br>
-      }<br>
-    }<br>
-<br>
-    // === &#128269; 視圖 2: 線上查字典 ===<br>
-    function renderDictTab() {}<br>
-<br>
-    async function searchDict() {<br>
-      const query = document.getElementById('dict-query-input').value.trim();<br>
-      if (!query) return;<br>
-<br>
-      const resultDisplay = document.getElementById('dict-result-content');<br>
-      resultDisplay.innerText = &quot;查詢中...&quot;;<br>
-<br>
-      try {<br>
-        const response = await
-fetch(`https://www.moedict.tw/a/${encodeURIComponent(query)}.json`);<br>
-        if (!response.ok) throw new Error('Not found');<br>
-        const data = await response.json();<br>
-        <br>
-        // 簡單格式化輸出<br>
-        let output = `&lt;strong&gt;【${data.title}】&lt;/strong&gt;&lt;br&gt;`;<br>
-        if(data.heteronyms &amp;&amp; data.heteronyms.length &gt; 0) {<br>
-          data.heteronyms.forEach(h =&gt; {<br>
-            if(h.bopomofo) output += `&lt;span
-style=&quot;color:var(--macaron-pink)&quot;&gt;[${h.bopomofo}]&lt;/span&gt;&lt;br&gt;`;<br>
-            if(h.definitions) {<br>
-              h.definitions.forEach(def =&gt; {<br>
-                output += def.def.replace(/`|~/g, '') + &quot;&lt;br&gt;&quot;;<br>
-              });<br>
-            }<br>
-          });<br>
-        }<br>
-        resultDisplay.innerHTML = output;<br>
-      } catch (error) {<br>
-        resultDisplay.innerText = &quot;查無此字或網路失敗，請試萌典官網。&quot;;<br>
-      }<br>
-    }<br>
-<br>
-    function copyDictResult() {<br>
-      const content = document.getElementById('dict-result-content').innerText;<br>
-      navigator.clipboard.writeText(content).then(() =&gt; {<br>
-        const copyBtn = document.getElementById('btn-copy-dict');<br>
-        copyBtn.innerText = &quot;&#128203; 已複製！&quot;;<br>
-        setTimeout(() =&gt; copyBtn.innerText = &quot;&#128203; 複製&quot;,
-1500);<br>
-      });<br>
-    }<br>
-<br>
-    // === ✍️ 視圖 3: 聽寫簿視圖 (田字格) ===<br>
-    function renderGridTab() {<br>
-      const renderArea = document.getElementById('grid-render-area');<br>
-      renderArea.innerHTML = ''; // 清空以前的渲染<br>
-<br>
-      // 目前僅渲染範例第一課<br>
-      const exampleLesson = appData.lessons[0];<br>
-      if (!exampleLesson) return;<br>
-<br>
-      exampleLesson.characters.forEach(charObj =&gt; {<br>
-        charObj.note.split('、').forEach(term =&gt; {<br>
-          renderArea.appendChild(renderTingxieTermGrid(term, charObj.id));<br>
-        });<br>
-      });<br>
-    }<br>
-<br>
-    function renderTingxieTermGrid(term, charId) {<br>
-      const termWrap = document.createElement('div');<br>
-      termWrap.className = 'grid-word-wrap print-show';<br>
-      termWrap.innerHTML = term.split('').map((c, i) =&gt; `<br>
-        &lt;div class=&quot;tian-char-wrap print-show&quot;
-onclick=&quot;toggleTingxieText(this)&quot;&gt;<br>
-          &lt;div class=&quot;tian-char print-show&quot;&gt;${c}&lt;/div&gt;<br>
-          &lt;div class=&quot;tian-zhuyin print-show&quot;&gt;&lt;div
-class=&quot;tian-zhuyin-text print-show&quot;&gt;&lt;/div&gt;&lt;/div&gt;<br>
-        &lt;/div&gt;<br>
-      `).join('');<br>
-      return termWrap;<br>
-    }<br>
-<br>
-    function toggleTingxieText(element) {<br>
-      const text = element.querySelector('.tian-char');<br>
-      if (text) {<br>
-        text.classList.toggle('hidden-text');<br>
-      }<br>
-    }<br>
-<br>
-    // === &#127911; 視圖 4: 考試與聽寫 ===<br>
-    function renderTestTab() {<br>
-      const testArea = document.getElementById('test-grid-container');<br>
-      testArea.innerHTML = '';<br>
-<br>
-      // 目前僅渲染範例第一課<br>
-      const exampleLesson = appData.lessons[0];<br>
-      if (!exampleLesson) return;<br>
-<br>
-      exampleLesson.characters.forEach(charObj =&gt; {<br>
-        charObj.note.split('、').forEach(term =&gt; {<br>
-          testArea.appendChild(renderTestTermGrid(term));<br>
-        });<br>
-      });<br>
-    }<br>
-<br>
-    function renderTestTermGrid(term) {<br>
-      const termWrap = document.createElement('div');<br>
-      termWrap.className = 'test-word-wrap no-print';<br>
-      termWrap.innerHTML = term.split('').map(c =&gt; `<br>
-        &lt;div class=&quot;tian-char-wrap no-print&quot;&gt;&lt;/div&gt;<br>
-      `).join('');<br>
-      return termWrap;<br>
-    }<br>
-<br>
-    // === 語音合成朗讀題目與圈詞 ===<br>
-    function speakCurrentTest() {<br>
-      const exampleLesson = appData.lessons[0];<br>
-      if (exampleLesson &amp;&amp; window.speechSynthesis) {<br>
-        const utter = new SpeechSynthesisUtterance(exampleLesson.note);<br>
-        utter.lang = 'zh-TW';<br>
-        window.speechSynthesis.speak(utter);<br>
-      }<br>
-    }<br>
-<br>
-    function speakCurrentTerm() {<br>
-      // 獲取選定的圈詞進行朗讀 (此功能需要額外的 UI 來選定當前題目)<br>
-      // 這裡僅朗讀範例第一課的第一個圈詞<br>
-      const firstTerm = appData.lessons[0].characters[0].note.split('、')[0];<br>
-      if (firstTerm &amp;&amp; window.speechSynthesis) {<br>
-        const utter = new SpeechSynthesisUtterance(firstTerm);<br>
-        utter.lang = 'zh-TW';<br>
-        window.speechSynthesis.speak(utter);<br>
-      }<br>
-    }<br>
-<br>
-    // === &#128279; 視圖 5: 資源與連結 ===<br>
-    function renderLinksTab() {<br>
-      filterLinks('all'); // 初始化顯示全部<br>
-    }<br>
-<br>
-    function filterLinks(subject) {<br>
-      const container = document.getElementById('links-container');<br>
-      container.innerHTML = '';<br>
-      <br>
-      const filterButtons = document.querySelectorAll('.link-filter
-.btn-dropdown');<br>
-      filterButtons.forEach(btn =&gt; btn.classList.remove('active'));<br>
-      event.target.classList.add('active');<br>
-<br>
-      appData.links.forEach(link =&gt; {<br>
-        if (subject === 'all' || link.subject === subject) {<br>
-          const card = document.createElement('div');<br>
-          card.className = 'resource-card no-print';<br>
-          card.innerHTML = `<br>
-            &lt;div class=&quot;resource-subject-tag no-print&quot;
-style=&quot;background-color: var(--macaron-purple);&quot;&gt;${link.subject}&lt;/div&gt;<br>
-            &lt;h3 class=&quot;resource-title subject-active&quot;
-style=&quot;background-color: var(--macaron-pink);
-color:#fff;&quot;&gt;${link.title}&lt;/h3&gt;<br>
-            &lt;p class=&quot;resource-desc
-no-print&quot;&gt;${link.desc}&lt;/p&gt;<br>
-            &lt;div class=&quot;resource-link-area no-print&quot;&gt;<br>
-              &lt;a href=&quot;${link.url}&quot; target=&quot;_blank&quot;
-class=&quot;btn btn-purple no-print&quot; style=&quot;color:#fff;
-text-decoration:none;&quot;&gt;&#128279; 打開連結&lt;/a&gt;<br>
-            &lt;/div&gt;<br>
-          `;<br>
-          container.appendChild(card);<br>
-        }<br>
-      });<br>
-    }<br>
-<br>
-    // === ⚙️ 視圖 6: 備份與還原 ===<br>
-    function exportData() {<br>
-      saveData(); // 先儲存目前的狀態<br>
-      const dataStr = &quot;data:text/json;charset=utf-8,&quot; +
-encodeURIComponent(JSON.stringify(appData));<br>
-      const downloadAnchorNode = document.createElement('a');<br>
-      downloadAnchorNode.setAttribute(&quot;href&quot;,     dataStr);<br>
-      downloadAnchorNode.setAttribute(&quot;download&quot;, &quot;國語聽寫簿資料備份.json&quot;);<br>
-      document.body.appendChild(downloadAnchorNode);<br>
-      downloadAnchorNode.click();<br>
-      downloadAnchorNode.remove();<br>
-    }<br>
-<br>
-    function importData(event) {<br>
-      const file = event.target.files[0];<br>
-      if (!file) return;<br>
-<br>
-      const reader = new FileReader();<br>
-      reader.onload = function(e) {<br>
-        try {<br>
-          const importedData = JSON.parse(e.target.result);<br>
-          // 在這裡可以加資料驗證邏輯<br>
-          appData = importedData;<br>
-          saveData();<br>
-          renderAllTabs();<br>
-          alert(&quot;資料還原成功！&quot;);<br>
-        } catch (error) {<br>
-          alert(&quot;還原失敗：檔案格式不正確。&quot;);<br>
-        }<br>
-      };<br>
-      reader.readAsText(file);<br>
-    }<br>
-<br>
-    function resetToDefault() {<br>
-      if(confirm(&quot;警告：這將會清除您所有的修改內容，恢復為初始範例。確定要繼續嗎？&quot;)) {<br>
-        appData = defaultData; // Deep copy required in production<br>
-        saveData();<br>
-        renderAllTabs();<br>
-        alert(&quot;已恢復預設範例。&quot;);<br>
-      }<br>
-    }<br>
-  &lt;/script&gt;<br>
-&lt;/body&gt;<br>
-&lt;/html&gt;<br>
-<br>
-</span></p>
+  <main>
+    <!-- === 視圖 1: 課文生字與圈詞 === -->
+    <div id="tab-lessons" class="tab-content">
+      <div id="lessons-container">
+        <!-- 這裡會由 JS 動態生成各課內容 -->
+      </div>
+    </div>
 
-</div>
+    <!-- === 視圖 2: 線上查字典 === -->
+    <div id="tab-dict" class="tab-content hidden">
+      <div class="dict-search-box no-print">
+        <div class="dict-search-title">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span>教育部萌典即時查詢</span>
+        </div>
+        <div class="dict-input-wrap">
+          <input type="text" id="dict-query-input" placeholder="輸入單字，例如：瘧" class="dict-input" onkeypress="if(event.key==='Enter') searchDict()">
+          <button onclick="searchDict()" class="btn" style="background-color: var(--macaron-purple); color:#fff;">線上查字</button>
+        </div>
+      </div>
+      <div class="dict-result-display">
+        <div class="dict-result-title">
+          <span>🔍 字典釋義結果：</span>
+          <button id="btn-copy-dict" class="btn btn-blue" onclick="copyDictResult()">📋 複製</button>
+        </div>
+        <div id="dict-result-content">請輸入單字查詢</div>
+      </div>
+    </div>
 
+    <!-- === 視圖 3: 聽寫簿視圖 (套用田字格) === -->
+    <div id="tab-grid" class="tab-content hidden grid-view">
+      <div class="no-print" style="margin-bottom: 1rem; display:flex; gap:10px;">
+        <button class="btn btn-pink" onclick="window.print()">🖨️ 列印網格聽寫簿</button>
+      </div>
+      <div id="grid-render-area" class="grid-container">
+        <!-- JS 動態生成田字格 -->
+      </div>
+    </div>
+
+    <!-- === 視圖 4: 考試與聽寫 === -->
+    <div id="tab-test" class="tab-content hidden dictation-view">
+      <div class="dictation-wrapper">
+        <div class="test-controls no-print">
+          <h2>國語聽寫/考試系統</h2>
+          <div class="audio-panel">
+            <button class="btn btn-purple" onclick="speakCurrentTest()">🎧 朗讀題目</button>
+            <button class="btn btn-green" onclick="speakCurrentTerm()">📚 朗讀選定圈詞</button>
+          </div>
+        </div>
+        <div id="test-grid-container" class="test-content">
+          <!-- JS 動態生成聽寫格子 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- === 視圖 5: 資源與連結 === -->
+    <div id="tab-links" class="tab-content hidden">
+      <div class="link-filter no-print" style="margin-bottom: 1rem;">
+        <button class="btn-dropdown active" onclick="filterLinks('all')">全部科目</button>
+        <button class="btn-dropdown" onclick="filterLinks('國語')">國語</button>
+        <button class="btn-dropdown" onclick="filterLinks('數學')">數學</button>
+        <button class="btn-dropdown" onclick="filterLinks('社會')">社會</button>
+        <button class="btn-dropdown" onclick="filterLinks('其它')">其它</button>
+      </div>
+      <div id="links-container" class="resources-grid">
+        <!-- JS 動態生成資源卡片 -->
+      </div>
+    </div>
+
+    <!-- === 視圖 6: 備份與還原 === -->
+    <div id="tab-backup" class="tab-content hidden no-print">
+      <div class="settings-panel">
+        <h2>⚙️ 資料管理中心</h2>
+        <div class="settings-info">您修改的所有內容都自動存在手機/iPad上。</div>
+        <div class="btn-group-column">
+          <button class="btn btn-blue" onclick="exportData()">📤 備份資料 (JSON匯出)</button>
+          <button class="btn btn-pink" onclick="document.getElementById('import-file').click()">📥 還原資料 (JSON匯入)</button>
+          <input type="file" id="import-file" accept=".json" style="display: none;" onchange="importData(event)">
+        </div>
+        <div class="settings-danger-zone">
+          <button class="btn btn-purple" onclick="resetToDefault()">⚠️ 恢復原始範例 (清除所有修改)</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // === 預設範例資料：康軒國語 五年級上學期 ===
+    const defaultData = {
+      lessons: [
+        { id: 1, title: "第一課： 蚊帳大使", summary: "請輸入第一課課文大意...",
+          batchInput: "蚊,ㄨㄣˊ,虫部,蚊子,蚊帳\n帳,ㄓㄤˋ,巾部,蚊帳,帳篷\n洲,ㄓㄡ,水部,非洲,亞洲", // 批次輸入範例
+          characters: [
+            { id: 1, char: "蚊", zhuyin: "ㄨㄣˊ", radical: "虫", note: "蚊子、蚊帳", terms: "蚊子、蚊帳、瘧蚊", tingxieVisible: true },
+            { id: 2, char: "帳", zhuyin: "ㄓㄤˋ", radical: "巾", note: "蚊帳、帳篷", terms: "蚊帳、帳篷、算帳", tingxieVisible: true },
+            { id: 3, char: "洲", zhuyin: "ㄓㄡ", radical: "水", note: "非洲、亞洲", terms: "非洲、亞洲、大洋洲", tingxieVisible: true }
+          ]
+        },
+        { id: 2, title: "第二課： 走過大地傷痕", summary: "請輸入第二課課文大意...", batchInput: "", characters: [] },
+        { id: 3, title: "第三課： 迎向光的植物", summary: "請輸入第三課課文大意...", batchInput: "", characters: [] },
+        { id: 4, title: "第四課： 智救羊群", summary: "請輸入第四課課文大意...", batchInput: "", characters: [] },
+        { id: 5, title: "第五課： 送愛到南非", summary: "請輸入第五課課文大意...", batchInput: "", characters: [] },
+        { id: 6, title: "第六課： 表演藝術饗宴", summary: "請輸入第六課課文大意...", batchInput: "", characters: [] },
+        { id: 7, title: "第七課： 珍珠試煉", summary: "請輸入第七課課文大意...", batchInput: "", characters: [] },
+        { id: 8, title: "第八課： 戰火下的溫情", summary: "請輸入第八課課文大意...", batchInput: "", characters: [] },
+        { id: 9, title: "第九課： 探索植物的秘密", summary: "請輸入第九課課文大意...", batchInput: "", characters: [] },
+        { id: 10, title: "第十課： 古詩選", summary: "請輸入第十課課文大意...", batchInput: "", characters: [] },
+        { id: 11, title: "第十一課： 被遺忘的奇蹟", summary: "請輸入第十一課課文大意...", batchInput: "", characters: [] },
+        { id: 12, title: "第十二課：魯賓遜漂流記", summary: "請輸入第十二課課文大意...", batchInput: "", characters: [] }
+      ],
+      currentSettings: { grade: "ㄧ", semester: "上", publisher: "康軒" },
+      links: [
+        { id: 1, subject: "國語", title: "萌典", desc: "數位國語辭典，非常好用。", url: "https://www.moedict.tw/" },
+        { id: 2, subject: "其它", title: "波波注音", desc: "參考格線樣式的好資源。", url: "https://bopodoc.com/worksheets/" }
+      ]
+    };
+
+    let appData = {};
+
+    // === 初始化與存檔 ===
+    window.onload = function() {
+      loadData();
+      renderAllTabs();
+    };
+
+    window.onbeforeunload = function() {
+      saveData();
+    };
+
+    function loadData() {
+      const stored = localStorage.getItem('MandarinDictTingxieData');
+      if (stored) {
+        appData = JSON.parse(stored);
+      } else {
+        appData = defaultData; // Deep copy required in production
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem('MandarinDictTingxieData', JSON.stringify(appData));
+    }
+
+    function renderAllTabs() {
+      renderLessonsTab();
+      renderDictTab();
+      renderGridTab();
+      renderTestTab();
+      renderLinksTab();
+    }
+
+    // === 切換分頁 ===
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+     
+      document.getElementById(tabId).classList.remove('hidden');
+      event.target.classList.add('active');
+    }
+
+    // === 📖 視圖 1: 課文生字與圈詞 ===
+    function renderLessonsTab() {
+      const container = document.getElementById('lessons-container');
+      container.innerHTML = '';
+
+      appData.lessons.forEach(lesson => {
+        const lessonDiv = document.createElement('div');
+        lessonDiv.className = `lesson-title-wrap lesson-${lesson.id}`;
+        lessonDiv.innerHTML = `
+          <div class="lesson-header no-print">
+            <h2 class="lesson-title" style="padding: 5px 10px; border-radius: 10px;">${lesson.title}</h2>
+          </div>
+          <div class="lesson-body print-show">
+            <textarea class="textarea-box textarea-summary print-show" placeholder="請輸入課文大意..." onblur="updateLessonSummary(${lesson.id}, this.value)">${lesson.summary}</textarea>
+           
+            <div class="char-controls no-print">
+              <h3>批量輸入生字/部首/圈詞</h3>
+              <p class="batch-input-desc">格式：生字,注音,部首,圈詞1,圈詞2 (每行一字)</p>
+              <textarea id="batch-input-${lesson.id}" class="textarea-box textarea-batch no-print" rows="5">${lesson.batchInput || ""}</textarea>
+              <button class="btn btn-green no-print" onclick="batchInputCharacters(${lesson.id})">批次填入此課生字</button>
+            </div>
+           
+            <div class="char-details print-show">
+              <h3>此課生字表與圈詞 (可點擊修改)</h3>
+              <div id="char-list-${lesson.id}" class="char-list-grid print-show">
+                ${lesson.characters.map(c => renderCharacterCard(lesson.id, c)).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+        container.appendChild(lessonDiv);
+      });
+    }
+
+    function renderCharacterCard(lessonId, charObj) {
+      return `
+        <div class="char-card print-show">
+          <div class="char-id-row"><span>${charObj.char}</span> | ${charObj.zhuyin} | ${charObj.radical}部</div>
+          <div class="char-terms-row">圈詞聽寫 (可修改)：
+            <input type="text" class="input-box input-terms print-show" value="${charObj.note}" onblur="updateCharacterNote(${lessonId}, ${charObj.id}, this.value)">
+          </div>
+        </div>
+      `;
+    }
+
+    function updateLessonSummary(lessonId, summary) {
+      const lesson = appData.lessons.find(l => l.id === lessonId);
+      if (lesson) lesson.summary = summary;
+    }
+
+    function updateCharacterNote(lessonId, charId, note) {
+      const lesson = appData.lessons.find(l => l.id === lessonId);
+      if (lesson) {
+        const character = lesson.characters.find(c => c.id === charId);
+        if (character) {
+          character.note = note;
+          character.terms = note; // 圈詞與 note 保持一致
+        }
+      }
+    }
+
+    // === 一鍵批次輸入生字 ===
+    function batchInputCharacters(lessonId) {
+      const lesson = appData.lessons.find(l => l.id === lessonId);
+      const inputArea = document.getElementById(`batch-input-${lessonId}`);
+      if (!lesson || !inputArea) return;
+
+      const inputText = inputArea.value.trim();
+      if (!inputText) return;
+
+      // 儲存輸入文本
+      lesson.batchInput = inputText;
+
+      const lines = inputText.split('\n');
+      lesson.characters = []; // 清空現有生字
+
+      lines.forEach((line, index) => {
+        const parts = line.split(',');
+        if (parts.length < 4) return; // 格式不符
+
+        const charObj = {
+          id: index + 1,
+          char: parts[0].trim(),
+          zhuyin: parts[1].trim(),
+          radical: parts[2].trim(),
+          note: parts.slice(3).join('、').trim(), // 圈詞1,圈詞2 -> 圈詞1、圈詞2
+          terms: parts.slice(3).join('、').trim(),
+          tingxieVisible: true
+        };
+        lesson.characters.push(charObj);
+      });
+
+      renderLessonCharList(lessonId); // 重新渲染此課生字列表
+    }
+
+    function renderLessonCharList(lessonId) {
+      const lesson = appData.lessons.find(l => l.id === lessonId);
+      const listContainer = document.getElementById(`char-list-${lessonId}`);
+      if (lesson && listContainer) {
+        listContainer.innerHTML = lesson.characters.map(c => renderCharacterCard(lessonId, c)).join('');
+      }
+    }
+
+    // === 🔍 視圖 2: 線上查字典 ===
+    function renderDictTab() {}
+
+    async function searchDict() {
+      const query = document.getElementById('dict-query-input').value.trim();
+      if (!query) return;
+
+      const resultDisplay = document.getElementById('dict-result-content');
+      resultDisplay.innerText = "查詢中...";
+
+      try {
+        const response = await fetch(`https://www.moedict.tw/a/${encodeURIComponent(query)}.json`);
+        if (!response.ok) throw new Error('Not found');
+        const data = await response.json();
+       
+        // 簡單格式化輸出
+        let output = `<strong>【${data.title}】</strong><br>`;
+        if(data.heteronyms && data.heteronyms.length > 0) {
+          data.heteronyms.forEach(h => {
+            if(h.bopomofo) output += `<span style="color:var(--macaron-pink)">[${h.bopomofo}]</span><br>`;
+            if(h.definitions) {
+              h.definitions.forEach(def => {
+                output += def.def.replace(/`|~/g, '') + "<br>";
+              });
+            }
+          });
+        }
+        resultDisplay.innerHTML = output;
+      } catch (error) {
+        resultDisplay.innerText = "查無此字或網路失敗，請試萌典官網。";
+      }
+    }
+
+    function copyDictResult() {
+      const content = document.getElementById('dict-result-content').innerText;
+      navigator.clipboard.writeText(content).then(() => {
+        const copyBtn = document.getElementById('btn-copy-dict');
+        copyBtn.innerText = "📋 已複製！";
+        setTimeout(() => copyBtn.innerText = "📋 複製", 1500);
+      });
+    }
+
+    // === ✍️ 視圖 3: 聽寫簿視圖 (田字格) ===
+    function renderGridTab() {
+      const renderArea = document.getElementById('grid-render-area');
+      renderArea.innerHTML = ''; // 清空以前的渲染
+
+      // 目前僅渲染範例第一課
+      const exampleLesson = appData.lessons[0];
+      if (!exampleLesson) return;
+
+      exampleLesson.characters.forEach(charObj => {
+        charObj.note.split('、').forEach(term => {
+          renderArea.appendChild(renderTingxieTermGrid(term, charObj.id));
+        });
+      });
+    }
+
+    function renderTingxieTermGrid(term, charId) {
+      const termWrap = document.createElement('div');
+      termWrap.className = 'grid-word-wrap print-show';
+      termWrap.innerHTML = term.split('').map((c, i) => `
+        <div class="tian-char-wrap print-show" onclick="toggleTingxieText(this)">
+          <div class="tian-char print-show">${c}</div>
+          <div class="tian-zhuyin print-show"><div class="tian-zhuyin-text print-show"></div></div>
+        </div>
+      `).join('');
+      return termWrap;
+    }
+
+    function toggleTingxieText(element) {
+      const text = element.querySelector('.tian-char');
+      if (text) {
+        text.classList.toggle('hidden-text');
+      }
+    }
+
+    // === 🎧 視圖 4: 考試與聽寫 ===
+    function renderTestTab() {
+      const testArea = document.getElementById('test-grid-container');
+      testArea.innerHTML = '';
+
+      // 目前僅渲染範例第一課
+      const exampleLesson = appData.lessons[0];
+      if (!exampleLesson) return;
+
+      exampleLesson.characters.forEach(charObj => {
+        charObj.note.split('、').forEach(term => {
+          testArea.appendChild(renderTestTermGrid(term));
+        });
+      });
+    }
+
+    function renderTestTermGrid(term) {
+      const termWrap = document.createElement('div');
+      termWrap.className = 'test-word-wrap no-print';
+      termWrap.innerHTML = term.split('').map(c => `
+        <div class="tian-char-wrap no-print"></div>
+      `).join('');
+      return termWrap;
+    }
+
+    // === 語音合成朗讀題目與圈詞 ===
+    function speakCurrentTest() {
+      const exampleLesson = appData.lessons[0];
+      if (exampleLesson && window.speechSynthesis) {
+        const utter = new SpeechSynthesisUtterance(exampleLesson.note);
+        utter.lang = 'zh-TW';
+        window.speechSynthesis.speak(utter);
+      }
+    }
+
+    function speakCurrentTerm() {
+      // 獲取選定的圈詞進行朗讀 (此功能需要額外的 UI 來選定當前題目)
+      // 這裡僅朗讀範例第一課的第一個圈詞
+      const firstTerm = appData.lessons[0].characters[0].note.split('、')[0];
+      if (firstTerm && window.speechSynthesis) {
+        const utter = new SpeechSynthesisUtterance(firstTerm);
+        utter.lang = 'zh-TW';
+        window.speechSynthesis.speak(utter);
+      }
+    }
+
+    // === 🔗 視圖 5: 資源與連結 ===
+    function renderLinksTab() {
+      filterLinks('all'); // 初始化顯示全部
+    }
+
+    function filterLinks(subject) {
+      const container = document.getElementById('links-container');
+      container.innerHTML = '';
+     
+      const filterButtons = document.querySelectorAll('.link-filter .btn-dropdown');
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      appData.links.forEach(link => {
+        if (subject === 'all' || link.subject === subject) {
+          const card = document.createElement('div');
+          card.className = 'resource-card no-print';
+          card.innerHTML = `
+            <div class="resource-subject-tag no-print" style="background-color: var(--macaron-purple);">${link.subject}</div>
+            <h3 class="resource-title subject-active" style="background-color: var(--macaron-pink); color:#fff;">${link.title}</h3>
+            <p class="resource-desc no-print">${link.desc}</p>
+            <div class="resource-link-area no-print">
+              <a href="${link.url}" target="_blank" class="btn btn-purple no-print" style="color:#fff; text-decoration:none;">🔗 打開連結</a>
+            </div>
+          `;
+          container.appendChild(card);
+        }
+      });
+    }
+
+    // === ⚙️ 視圖 6: 備份與還原 ===
+    function exportData() {
+      saveData(); // 先儲存目前的狀態
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData));
+      const downloadAnchorNode = document.createElement('a');
+      downloadAnchorNode.setAttribute("href",     dataStr);
+      downloadAnchorNode.setAttribute("download", "國語聽寫簿資料備份.json");
+      document.body.appendChild(downloadAnchorNode);
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const importedData = JSON.parse(e.target.result);
+          // 在這裡可以加資料驗證邏輯
+          appData = importedData;
+          saveData();
+          renderAllTabs();
+          alert("資料還原成功！");
+        } catch (error) {
+          alert("還原失敗：檔案格式不正確。");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetToDefault() {
+      if(confirm("警告：這將會清除您所有的修改內容，恢復為初始範例。確定要繼續嗎？")) {
+        appData = defaultData; // Deep copy required in production
+        saveData();
+        renderAllTabs();
+        alert("已恢復預設範例。");
+      }
+    }
+  </script>
 </body>
-
 </html>
