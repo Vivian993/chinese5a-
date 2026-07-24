@@ -27,7 +27,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans TC', sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
     
-    header { background: linear-gradient(135deg, #fff 0%, var(--border-color) 100%); padding: 1rem; border-bottom: 3px dashed var(--m-pink); text-align: center; }
+    header { background: linear-gradient(135deg, #fff 0%, var(--border-color) 100%); padding: 1.2rem 1rem; border-bottom: 3px dashed var(--m-pink); text-align: center; }
     .subtitle { font-size: 0.9rem; font-weight: 800; color: #D48C9E; margin-bottom: 0.5rem; display: inline-block; padding: 4px 12px; border-radius: 20px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
     
     .header-title-group { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px; font-size: 1.4rem; font-weight: 900; color: var(--m-purple); }
@@ -56,11 +56,15 @@
     .btn-purple { background-color: var(--m-purple); color: #fff; }
     
     .input-box, .textarea-box { width: 100%; border: 2px solid var(--border-color); border-radius: 12px; padding: 0.6rem; font-size: 1rem; outline: none; background: #fff; font-family: inherit; }
+    .input-box:focus, .textarea-box:focus { border-color: var(--m-pink); }
     .hidden { display: none !important; }
 
-    /* 生字區 */
+    /* 課文生字區 */
     .lesson-selector-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; background: #fff; padding: 10px 15px; border-radius: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-    .lesson-title-display { font-size: 1.3rem; font-weight: 900; padding: 0.6rem 1rem; border-radius: 12px; text-align: center; margin-bottom: 0.5rem; }
+    
+    .lesson-title-display { font-size: 1.3rem; font-weight: 900; padding: 0.6rem 1rem; border-radius: 12px; text-align: center; margin-bottom: 0.5rem; outline: none; cursor: text; }
+    .lesson-title-display:hover { background-color: rgba(0,0,0,0.03); }
+    
     .color-1 { background: var(--m-pink); color: #5D5D5D; }
     .color-2 { background: var(--m-blue); color: #5D5D5D; }
     .color-3 { background: var(--m-green); color: #5D5D5D; }
@@ -72,7 +76,7 @@
 
     .char-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem; }
     .swipe-container { position: relative; overflow: hidden; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); background: #FF9AA2; }
-    .delete-bg { position: absolute; right: 0; top: 0; bottom: 0; width: 80px; display: flex; align-items: center; justify-content: center; background: #FF9AA2; color: white; font-size: 1.8font-weight: bold; border-radius: 0 20px 20px 0; cursor: pointer; }
+    .delete-bg { position: absolute; right: 0; top: 0; bottom: 0; width: 80px; display: flex; align-items: center; justify-content: center; background: #FF9AA2; color: white; font-size: 1.8rem; font-weight: bold; border-radius: 0 20px 20px 0; cursor: pointer; }
     .char-card { position: relative; background: #fff; padding: 1.2rem; border-radius: 20px; z-index: 2; transition: transform 0.3s ease; border: 2px solid #fff; }
     .char-card.swiped { transform: translateX(-80px); }
     
@@ -82,7 +86,7 @@
     .char-pinyin { font-size: 1.1rem; font-weight: 800; }
     .char-radical { font-size: 0.8rem; color: #fff; background: var(--m-blue); padding: 2px 6px; border-radius: 8px; margin-left: 5px; }
 
-    /* === 完美仿照範例的滿版田字格 (標楷體、直行) === */
+    /* === 完美仿照範例的正方形田字格 (標楷體、直行) === */
     .test-panel { background: #fff; padding: 1.5rem; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 1rem; }
     
     .tian-page-wrapper {
@@ -94,23 +98,28 @@
     .tian-col { display: flex; flex-direction: column; border-left: 1.5px solid #333; border-top: 1.5px solid #333; border-bottom: 1.5px solid #333; }
     .tian-col:first-child { border-right: 1.5px solid #333; }
     
+    /* 正方形格子比例 */
     .tian-cell-wrap { display: flex; flex-direction: row; width: 68px; height: 68px; border-bottom: 1.5px solid #333; cursor: pointer; user-select: none; background: #fff; }
     .tian-cell-wrap:last-child { border-bottom: none; }
     
+    /* 國字格 (正方形 46x68 中的 46x46 比例視覺) */
     .tian-char-box { width: 46px; height: 100%; position: relative; border-right: 1px solid #333; display: flex; align-items: center; justify-content: center; }
     .tian-char-box::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; border-top: 1px dashed #888; z-index: 1;}
     .tian-char-box::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px dashed #888; z-index: 1;}
-    .tian-char-text { position: relative; z-index: 2; font-size: 2.2rem; font-weight: normal; color: #000; font-family: 'DFKai-SB', 'BiauKai', serif; }
+    .tian-char-text { position: relative; z-index: 2; font-size: 2rem; font-weight: normal; color: #000; font-family: 'DFKai-SB', 'BiauKai', serif; transition: 0.2s; }
     
+    /* 注音格 (右側長條格) */
     .tian-zy-box { width: 22px; height: 100%; position: relative; display: flex; align-items: center; justify-content: center; }
-    .tian-zy-box::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px dotted #aaa; z-index: 1;}
-    .tian-zy-text { position: relative; z-index: 2; font-size: 0.85rem; color: #000; font-family: 'DFKai-SB', 'BiauKai', serif; writing-mode: vertical-rl; letter-spacing: -2px; }
+    .tian-zy-box::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px dashed #aaa; z-index: 1;}
+    .tian-zy-text { position: relative; z-index: 2; font-size: 0.75rem; color: #000; font-family: 'DFKai-SB', 'BiauKai', serif; display: flex; flex-direction: column; align-items: center; line-height: 1; }
+    .tian-zy-text span { display: block; }
     
     .text-hidden { color: transparent !important; }
 
     /* 字典區 */
     .dict-result { background: #fff; padding: 1.5rem; border-radius: 20px; border: 2px solid var(--m-blue); margin-top: 1rem; min-height: 150px; }
-    .dict-result-text { font-size: 1.3rem; line-height: 1.8; color: #333; margin-top: 1rem; font-family: 'DFKai-SB', 'BiauKai', serif; }
+    .dict-result-text { font-size: 1.2rem; line-height: 1.8; color: #333; margin-top: 1rem; font-family: 'DFKai-SB', 'BiauKai', serif; }
+    .dict-result-text h4 { color: var(--m-purple); margin-bottom: 5px; }
     
     .mistake-card { background: #FFF9E6; border-left: 5px solid var(--m-yellow); padding: 1rem; border-radius: 10px; margin-bottom: 10px; }
     .mistake-char { font-size: 1.8rem; font-weight: 900; color: #D48C9E; font-family: 'DFKai-SB', 'BiauKai', serif; }
@@ -198,7 +207,7 @@
       <div class="test-panel no-print">
         <h2 style="color: var(--m-pink); margin-bottom: 0.5rem;">自動聽寫與直行田字格</h2>
         <p style="font-size: 0.95rem; color: var(--text-light); margin-bottom: 1rem; line-height: 1.5;">
-          下方自動帶入本課圈詞，可自由修改。支援 A4 滿版直行排版（由右至左、標楷體）。<br>
+          下方自動帶入本課圈詞，可自由修改。支援 A4 滿版直行排版（由右至左、標楷體、注音垂直對齊）。<br>
           👉 <b>點擊格子內的國字或注音即可隱藏，方便列印考卷！</b>
         </p>
         
@@ -215,12 +224,13 @@
       <div id="grid-render-area" class="tian-page-wrapper print-show"></div>
     </div>
 
-    <!-- 🔍 視圖 3: 線上查字典 (雙軌修復版) -->
+    <!-- 🔍 視圖 3: 線上查字典 (安全防禦修復版) -->
     <div id="view-dict" class="tab-content hidden">
       <div class="test-panel no-print">
-        <h2 style="color: var(--m-purple); margin-bottom: 1rem;">線上國語字典 (萌典 + 官網雙軌查詢)</h2>
+        <h2 style="color: var(--m-purple); margin-bottom: 1rem;">線上國語字典 (萌典即時查)</h2>
+        <p style="font-size: 0.9rem; color: #888; margin-bottom: 1rem;">輸入單字或成語，為您提供詳細的注音、部首、筆畫與釋義。</p>
         <div style="display: flex; gap: 10px;">
-          <input type="text" id="dict-input" class="input-box" placeholder="輸入單字，例如：蚊" onkeypress="if(event.key==='Enter') searchMoedictRobust()">
+          <input type="text" id="dict-input" class="input-box" placeholder="輸入字詞，例如：蚊" onkeypress="if(event.key==='Enter') searchMoedictRobust()">
           <button class="btn btn-purple" style="white-space: nowrap; font-size:1rem;" onclick="searchMoedictRobust()">線上查字</button>
         </div>
       </div>
@@ -246,7 +256,7 @@
       <div id="mistakes-container" class="print-show"></div>
     </div>
 
-    <!-- 🔗 視圖 5: 資源連結 (支援顏色說明) -->
+    <!-- 🔗 視圖 5: 資源連結 -->
     <div id="view-links" class="tab-content hidden">
       <div class="test-panel no-print" style="margin-bottom: 1rem;">
         <h2 style="color: var(--m-blue); margin-bottom: 1rem;">新增實用連結與說明</h2>
@@ -263,7 +273,7 @@
       <div id="links-container"></div>
     </div>
 
-    <!-- ⚙️ 視圖 6: 備份與還原 (修正 Blob 匯出) -->
+    <!-- ⚙️ 視圖 6: 備份與還原 -->
     <div id="view-backup" class="tab-content hidden no-print">
       <div class="test-panel" style="text-align: center;">
         <h2 style="color: var(--m-green); margin-bottom: 1rem;">資料備份與還原</h2>
@@ -313,7 +323,7 @@
 
     // === 核心初始化 ===
     window.onload = () => {
-      const stored = localStorage.getItem('MandarinAppV7');
+      const stored = localStorage.getItem('MandarinAppV8');
       if (stored) {
         try { appData = JSON.parse(stored); } catch(e) { appData = JSON.parse(JSON.stringify(defaultData)); }
       } else {
@@ -337,7 +347,7 @@
       appData.semester = document.getElementById('sel-semester').value;
       appData.publisher = document.getElementById('sel-publisher').value;
       appData.speed = document.getElementById('speech-speed').value;
-      localStorage.setItem('MandarinAppV7', JSON.stringify(appData));
+      localStorage.setItem('MandarinAppV8', JSON.stringify(appData));
     }
 
     function initHeader() {
@@ -380,7 +390,7 @@
       const colorClass = `color-${((lesson.id - 1) % 5) + 1}`; 
       
       let html = `
-        <div class="lesson-title-display ${colorClass}">${lesson.title}</div>
+        <div class="lesson-title-display ${colorClass}" contenteditable="true" onblur="updateLessonTitle(${lesson.id}, this.innerText)">${lesson.title}</div>
         <textarea class="textarea-box" rows="2" placeholder="在此輸入課文大意 (點擊外側自動存檔)..." onblur="saveLessonData(${lesson.id}, 'summary', this.value)">${lesson.summary}</textarea>
         
         <details class="batch-details no-print" style="margin-top: 1rem;">
@@ -411,6 +421,15 @@
       `;
       container.innerHTML = html;
       document.getElementById('test-lesson-select').value = currentLessonId;
+    }
+
+    function updateLessonTitle(lId, newTitle) {
+      const l = appData.lessons.find(x => x.id === lId);
+      if(l) { 
+        l.title = newTitle.trim(); 
+        saveData(); 
+        initSelectors(); // 同步更新下拉選單
+      }
     }
 
     function saveLessonData(lId, key, val) {
@@ -492,7 +511,7 @@
       }
     }
 
-    // === ✍️ 聽寫與直行田字格 ===
+    // === ✍️ 聽寫與直行田字格 (完美波波注音風格排版) ===
     function loadTestTerms() {
       const tId = parseInt(document.getElementById('test-lesson-select').value);
       const l = appData.lessons.find(x => x.id === tId);
@@ -547,7 +566,7 @@
                 <span class="tian-char-text">${cellData.char}</span>
               </div>
               <div class="tian-zy-box" onclick="this.querySelector('.tian-zy-text').classList.toggle('text-hidden')">
-                <span class="tian-zy-text">${formatZhuyin(cellData.zhuyin)}</span>
+                <span class="tian-zy-text">${formatZhuyinVertical(cellData.zhuyin)}</span>
               </div>
             </div>
           `;
@@ -556,15 +575,16 @@
       }
     }
 
-    function formatZhuyin(zy) {
+    // 完美注音直立排版
+    function formatZhuyinVertical(zy) {
       if(!zy) return "";
       let res = "";
       for(let i=0; i<zy.length; i++) {
         let char = zy[i];
         if("ˊˇˋ˙".includes(char)) {
-          res += `<span style="position:absolute; right:-4px; top:${(i-1)*10}px; font-size:0.35cm;">${char}</span>`;
+          res += `<span style="position:absolute; right:-2px; top:${i*10}px; font-size:0.5rem; font-weight:bold;">${char}</span>`;
         } else {
-          res += `<div>${char}</div>`;
+          res += `<span>${char}</span>`;
         }
       }
       return res;
@@ -631,7 +651,7 @@
 
     function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-    // === 🔍 雙軌線上查字典 (萌典 + 備用網頁連結) ===
+    // === 🔍 雙軌線上查字典 (完全防禦未定義錯誤) ===
     async function searchMoedictRobust() {
       const q = document.getElementById('dict-input').value.trim();
       const out = document.getElementById('dict-output');
@@ -643,16 +663,18 @@
         if(!res.ok) throw new Error('not found');
         const data = await res.json();
         
-        let html = `<strong>【${data.title}】</strong><br>`;
-        if(data.radical) html += `<span style="font-size:1rem; color:#888;">部首：${data.radical}部 | 筆畫：${data.stroke_count}畫</span><br><br>`;
+        let html = `<strong>【${data.title || q}】</strong><br>`;
+        if(data.radical) html += `<span style="font-size:1rem; color:#888;">部首：${data.radical}部 | 筆畫：${data.stroke_count || ''}畫</span><br><br>`;
         
-        if(data.heteronyms) {
+        if(data.heteronyms && Array.isArray(data.heteronyms)) {
           data.heteronyms.forEach(h => {
-            if(h.bopomofo) html += `<span style="color:var(--m-pink); font-weight:800;">[${h.bopomofo}]</span><br>`;
-            if(h.definitions) {
+            if(h.bopomofo) html += `<span style="color:var(--m-pink); font-weight:800; font-size:1.2rem;">[${h.bopomofo}]</span><br>`;
+            if(h.definitions && Array.isArray(h.definitions)) {
               html += `<ul>`;
               h.definitions.forEach((d, idx) => {
-                html += `<li>${d.def.replace(/`|~/g, '')}</li>`;
+                if(d && d.def) {
+                  html += `<li>${d.def.replace(/`|~/g, '')}</li>`;
+                }
               });
               html += `</ul>`;
             }
@@ -660,9 +682,9 @@
         }
         out.innerHTML = html;
       } catch(e) {
-        // 雙軌備用：直接提供教育部線上辭典快速連結，保證一定查得到
+        // 雙軌備用連結
         out.innerHTML = `
-          <span style="color:#d9534f; font-weight:bold;">⚠️ 瀏覽器因安全防護無法直接從外部讀取該字資料。</span><br><br>
+          <span style="color:#d9534f; font-weight:bold;">⚠️ 瀏覽器因跨域安全防護無法直接從外部讀取該字資料。</span><br><br>
           請點擊下方按鈕直接前往教育部官方辭典查詢：<br><br>
           <a href="https://dict.revised.moe.edu.tw/search.jsp?md=1&word=${encodeURIComponent(q)}" target="_blank" class="btn btn-pink" style="text-decoration:none; font-size:1.1rem; padding: 0.8rem 1.5rem;">🔗 前往教育部國語辭典查「${q}」</a>
         `;
@@ -678,12 +700,12 @@
       });
     }
 
-    // === 🔗 資源連結 (含不同顏色說明) ===
+    // === 🔗 資源連結 (含自訂說明) ===
     function renderLinks() {
       const container = document.getElementById('links-container');
       container.innerHTML = '';
       appData.links.forEach((l, i) => {
-        let colorClass = `desc-color-${i % 4}`;
+        let colorClass = `desc-color-${i % 3}`;
         container.innerHTML += `
           <div class="link-card">
             <div style="flex-grow:1; margin-right:10px;">
@@ -754,7 +776,7 @@
 
     function resetData() {
       if(confirm("警告：將清除您所有的修改內容，恢復為系統預設值。確定繼續嗎？")) {
-        localStorage.removeItem('MandarinAppV7');
+        localStorage.removeItem('MandarinAppV8');
         location.reload();
       }
     }
