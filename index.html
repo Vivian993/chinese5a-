@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>國語字典聽寫簿學習系統</title>
   
-  <!-- 📌 iPhone 桌面 App 圖示 -->
   <link rel="apple-touch-icon" href="custom-icon.png">
   <link rel="icon" type="image/png" href="custom-icon.png">
 
@@ -38,7 +37,6 @@
     .speed-wrap { display: inline-block; margin-top: 8px; }
     .speed-select { appearance: none; background: #fff; border: 2px solid var(--m-green); border-radius: 20px; padding: 4px 12px; font-size: 0.85rem; font-weight: 700; color: #555; outline: none; cursor: pointer; }
 
-    /* 固定導覽列 */
     nav { background-color: white; border-bottom: 2px solid var(--border-color); position: sticky; top: 0; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
     .nav-container { display: flex; overflow-x: auto; white-space: nowrap; scrollbar-width: none; max-width: 1000px; margin: 0 auto; }
     .nav-container::-webkit-scrollbar { display: none; }
@@ -63,7 +61,7 @@
     .lesson-selector-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; background: #fff; padding: 10px 15px; border-radius: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
     
     .lesson-title-display { font-size: 1.3rem; font-weight: 900; padding: 0.6rem 1rem; border-radius: 12px; text-align: center; margin-bottom: 0.5rem; outline: none; cursor: text; }
-    .lesson-title-display:hover { background-color: rgba(0,0,0,0.03); }
+    .lesson-title-display:hover { background-color: rgba(0,0,0,0.03); border: 1px dashed var(--m-pink); }
     
     .color-1 { background: var(--m-pink); color: #5D5D5D; }
     .color-2 { background: var(--m-blue); color: #5D5D5D; }
@@ -86,7 +84,7 @@
     .char-pinyin { font-size: 1.1rem; font-weight: 800; }
     .char-radical { font-size: 0.8rem; color: #fff; background: var(--m-blue); padding: 2px 6px; border-radius: 8px; margin-left: 5px; }
 
-    /* === 完美仿照範例的正方形田字格 (標楷體、直行) === */
+    /* === 完美仿照範例的田字格 (標楷體、直行) === */
     .test-panel { background: #fff; padding: 1.5rem; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 1rem; }
     
     .tian-page-wrapper {
@@ -98,20 +96,17 @@
     .tian-col { display: flex; flex-direction: column; border-left: 1.5px solid #333; border-top: 1.5px solid #333; border-bottom: 1.5px solid #333; }
     .tian-col:first-child { border-right: 1.5px solid #333; }
     
-    /* 正方形格子比例 */
     .tian-cell-wrap { display: flex; flex-direction: row; width: 68px; height: 68px; border-bottom: 1.5px solid #333; cursor: pointer; user-select: none; background: #fff; }
     .tian-cell-wrap:last-child { border-bottom: none; }
     
-    /* 國字格 (正方形 46x68 中的 46x46 比例視覺) */
     .tian-char-box { width: 46px; height: 100%; position: relative; border-right: 1px solid #333; display: flex; align-items: center; justify-content: center; }
     .tian-char-box::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; border-top: 1px dashed #888; z-index: 1;}
     .tian-char-box::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px dashed #888; z-index: 1;}
     .tian-char-text { position: relative; z-index: 2; font-size: 2rem; font-weight: normal; color: #000; font-family: 'DFKai-SB', 'BiauKai', serif; transition: 0.2s; }
     
-    /* 注音格 (右側長條格) */
     .tian-zy-box { width: 22px; height: 100%; position: relative; display: flex; align-items: center; justify-content: center; }
     .tian-zy-box::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px dashed #aaa; z-index: 1;}
-    .tian-zy-text { position: relative; z-index: 2; font-size: 0.75rem; color: #000; font-family: 'DFKai-SB', 'BiauKai', serif; display: flex; flex-direction: column; align-items: center; line-height: 1; }
+    .tian-zy-text { position: relative; z-index: 2; font-size: 0.75rem; color: #000; font-family: 'DFKai-SB', 'BiauKai', serif; display: flex; flex-direction: column; align-items: center; line-height: 1.1; }
     .tian-zy-text span { display: block; }
     
     .text-hidden { color: transparent !important; }
@@ -131,7 +126,7 @@
     .desc-color-1 { background: #FFDAC1; } 
     .desc-color-2 { background: #B5EAD7; } 
 
-    /* 列印設定 (黑線、滿版 A4) */
+    /* 列印設定 */
     @media print {
       body { background: #fff !important; }
       header, nav, .lesson-selector-bar, .no-print { display: none !important; }
@@ -150,7 +145,7 @@
 </head>
 <body>
 
-  <!-- 標題與無縫下拉選單 -->
+  <!-- 標題與選單 -->
   <header class="no-print">
     <div class="subtitle">國語線上字典學習系統：詳細生字.成語圈詞.真人朗讀</div>
     <div>
@@ -224,11 +219,11 @@
       <div id="grid-render-area" class="tian-page-wrapper print-show"></div>
     </div>
 
-    <!-- 🔍 視圖 3: 線上查字典 (安全防禦修復版) -->
+    <!-- 🔍 視圖 3: 線上查字典 (雙軌修復 + 內建直出) -->
     <div id="view-dict" class="tab-content hidden">
       <div class="test-panel no-print">
-        <h2 style="color: var(--m-purple); margin-bottom: 1rem;">線上國語字典 (萌典即時查)</h2>
-        <p style="font-size: 0.9rem; color: #888; margin-bottom: 1rem;">輸入單字或成語，為您提供詳細的注音、部首、筆畫與釋義。</p>
+        <h2 style="color: var(--m-purple); margin-bottom: 1rem;">線上國語字典 (萌典直接顯示)</h2>
+        <p style="font-size: 0.9rem; color: #888; margin-bottom: 1rem;">輸入單字或成語，直接在下方顯示注音與詳細釋義。</p>
         <div style="display: flex; gap: 10px;">
           <input type="text" id="dict-input" class="input-box" placeholder="輸入字詞，例如：蚊" onkeypress="if(event.key==='Enter') searchMoedictRobust()">
           <button class="btn btn-purple" style="white-space: nowrap; font-size:1rem;" onclick="searchMoedictRobust()">線上查字</button>
@@ -256,7 +251,7 @@
       <div id="mistakes-container" class="print-show"></div>
     </div>
 
-    <!-- 🔗 視圖 5: 資源連結 -->
+    <!-- 🔗 視圖 5: 資源連結 (含顏色說明) -->
     <div id="view-links" class="tab-content hidden">
       <div class="test-panel no-print" style="margin-bottom: 1rem;">
         <h2 style="color: var(--m-blue); margin-bottom: 1rem;">新增實用連結與說明</h2>
@@ -323,7 +318,7 @@
 
     // === 核心初始化 ===
     window.onload = () => {
-      const stored = localStorage.getItem('MandarinAppV8');
+      const stored = localStorage.getItem('MandarinAppV9');
       if (stored) {
         try { appData = JSON.parse(stored); } catch(e) { appData = JSON.parse(JSON.stringify(defaultData)); }
       } else {
@@ -347,7 +342,7 @@
       appData.semester = document.getElementById('sel-semester').value;
       appData.publisher = document.getElementById('sel-publisher').value;
       appData.speed = document.getElementById('speech-speed').value;
-      localStorage.setItem('MandarinAppV8', JSON.stringify(appData));
+      localStorage.setItem('MandarinAppV9', JSON.stringify(appData));
     }
 
     function initHeader() {
@@ -381,7 +376,7 @@
       window.scrollTo(0, 0); 
     }
 
-    // === 📖 課文生字渲染 ===
+    // === 📖 課文生字渲染 (標題可直接修改) ===
     function renderLessonView() {
       currentLessonId = parseInt(document.getElementById('lesson-select').value);
       const lesson = appData.lessons.find(l => l.id === currentLessonId);
@@ -428,7 +423,7 @@
       if(l) { 
         l.title = newTitle.trim(); 
         saveData(); 
-        initSelectors(); // 同步更新下拉選單
+        initSelectors(); 
       }
     }
 
@@ -511,7 +506,7 @@
       }
     }
 
-    // === ✍️ 聽寫與直行田字格 (完美波波注音風格排版) ===
+    // === ✍️ 聽寫與直行田字格 (波波注音標準直書) ===
     function loadTestTerms() {
       const tId = parseInt(document.getElementById('test-lesson-select').value);
       const l = appData.lessons.find(x => x.id === tId);
@@ -575,14 +570,13 @@
       }
     }
 
-    // 完美注音直立排版
     function formatZhuyinVertical(zy) {
       if(!zy) return "";
       let res = "";
       for(let i=0; i<zy.length; i++) {
         let char = zy[i];
         if("ˊˇˋ˙".includes(char)) {
-          res += `<span style="position:absolute; right:-2px; top:${i*10}px; font-size:0.5rem; font-weight:bold;">${char}</span>`;
+          res += `<span style="font-size:0.6rem; margin-left:-2px;">${char}</span>`;
         } else {
           res += `<span>${char}</span>`;
         }
@@ -651,12 +645,12 @@
 
     function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-    // === 🔍 雙軌線上查字典 (完全防禦未定義錯誤) ===
+    // === 🔍 線上查字典 (萌典直接顯示，附帶教育部官方備用按鈕) ===
     async function searchMoedictRobust() {
       const q = document.getElementById('dict-input').value.trim();
       const out = document.getElementById('dict-output');
       if(!q) return;
-      out.innerHTML = `<span style="color:var(--m-purple); font-weight:bold;">🔍 正在連線教育部辭典查詢...</span>`;
+      out.innerHTML = `<span style="color:var(--m-purple); font-weight:bold;">🔍 正在查詢中...</span>`;
       
       try {
         const res = await fetch(`https://www.moedict.tw/a/${encodeURIComponent(q)}.json`);
@@ -682,10 +676,10 @@
         }
         out.innerHTML = html;
       } catch(e) {
-        // 雙軌備用連結
+        // 若瀏覽器安全性阻擋跨域，直接呈現一鍵連至教育部官網的按鈕
         out.innerHTML = `
-          <span style="color:#d9534f; font-weight:bold;">⚠️ 瀏覽器因跨域安全防護無法直接從外部讀取該字資料。</span><br><br>
-          請點擊下方按鈕直接前往教育部官方辭典查詢：<br><br>
+          <span style="color:#d9534f; font-weight:bold;">⚠️ 系統已自動切換至教育部官方辭典。</span><br><br>
+          請點擊下方按鈕直接查詢「${q}」：<br><br>
           <a href="https://dict.revised.moe.edu.tw/search.jsp?md=1&word=${encodeURIComponent(q)}" target="_blank" class="btn btn-pink" style="text-decoration:none; font-size:1.1rem; padding: 0.8rem 1.5rem;">🔗 前往教育部國語辭典查「${q}」</a>
         `;
       }
@@ -700,7 +694,7 @@
       });
     }
 
-    // === 🔗 資源連結 (含自訂說明) ===
+    // === 🔗 資源連結 (含不同背景顏色說明) ===
     function renderLinks() {
       const container = document.getElementById('links-container');
       container.innerHTML = '';
@@ -776,7 +770,7 @@
 
     function resetData() {
       if(confirm("警告：將清除您所有的修改內容，恢復為系統預設值。確定繼續嗎？")) {
-        localStorage.removeItem('MandarinAppV8');
+        localStorage.removeItem('MandarinAppV9');
         location.reload();
       }
     }
