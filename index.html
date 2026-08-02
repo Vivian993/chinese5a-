@@ -4,15 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>國語字典聽寫簿學習系統</title>
-  
+
   <link rel="apple-touch-icon" href="custom-icon.png">
   <link rel="icon" type="image/png" href="custom-icon.png">
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800;900&display=swap');
-    
+
     :root {
-      --bg-color: #FFF5F7; 
+      --bg-color: #FFF5F7;
       --card-bg: #FFFFFF;
       --m-pink: #FFB7B2;
       --m-blue: #B5EAD7;
@@ -25,17 +25,18 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans TC', sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
-    
+
     header { background: linear-gradient(135deg, #fff 0%, var(--border-color) 100%); padding: 1.2rem 1rem; border-bottom: 3px dashed var(--m-pink); text-align: center; }
     .subtitle { font-size: 0.9rem; font-weight: 800; color: #D48C9E; margin-bottom: 0.5rem; display: inline-block; padding: 4px 12px; border-radius: 20px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
-    
+
     .header-title-group { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px; font-size: 1.4rem; font-weight: 900; color: var(--m-purple); }
     .header-title-group select { appearance: none; background: transparent; border: none; font-size: 1.4rem; font-weight: 900; color: var(--m-purple); cursor: pointer; outline: none; padding: 0 4px; text-align: center; border-bottom: 2px solid rgba(203, 170, 203, 0.4); }
     .header-title-group select:hover { border-bottom-color: var(--m-pink); color: var(--m-pink); }
     .header-title-group select option { font-size: 1rem; color: #333; background: #fff; }
-    
-    .speed-wrap { display: inline-block; margin-top: 8px; }
+
+    .header-controls { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 8px; flex-wrap: wrap; }
     .speed-select { appearance: none; background: #fff; border: 2px solid var(--m-green); border-radius: 20px; padding: 4px 12px; font-size: 0.85rem; font-weight: 700; color: #555; outline: none; cursor: pointer; }
+    .sound-toggle-btn { appearance: none; background: #fff; border: 2px solid var(--m-yellow); border-radius: 20px; padding: 4px 14px; font-size: 0.85rem; font-weight: 700; color: #555; outline: none; cursor: pointer; }
 
     nav { background-color: white; border-bottom: 2px solid var(--border-color); position: sticky; top: 0; z-index: 999; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
     .nav-container { display: flex; overflow-x: auto; white-space: nowrap; scrollbar-width: none; max-width: 1000px; margin: 0 auto; }
@@ -52,17 +53,17 @@
     .btn-green { background-color: var(--m-green); color: #5D5D5D; }
     .btn-yellow { background-color: var(--m-yellow); color: #5D5D5D; }
     .btn-purple { background-color: var(--m-purple); color: #fff; }
-    
+
     .input-box, .textarea-box { width: 100%; border: 2px solid var(--border-color); border-radius: 12px; padding: 0.6rem; font-size: 1rem; outline: none; background: #fff; font-family: inherit; }
     .input-box:focus, .textarea-box:focus { border-color: var(--m-pink); }
     .hidden { display: none !important; }
 
     /* 課文生字區 */
     .lesson-selector-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; background: #fff; padding: 10px 15px; border-radius: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); }
-    
+
     .lesson-title-display { font-size: 1.3rem; font-weight: 900; padding: 0.6rem 1rem; border-radius: 12px; text-align: center; margin-bottom: 0.5rem; outline: none; cursor: text; }
     .lesson-title-display:hover { background-color: rgba(0,0,0,0.03); border: 1px dashed var(--m-pink); }
-    
+
     .color-1 { background: var(--m-pink); color: #5D5D5D; }
     .color-2 { background: var(--m-blue); color: #5D5D5D; }
     .color-3 { background: var(--m-green); color: #5D5D5D; }
@@ -77,67 +78,71 @@
     .delete-bg { position: absolute; right: 0; top: 0; bottom: 0; width: 80px; display: flex; align-items: center; justify-content: center; background: #FF9AA2; color: white; font-size: 1.8rem; font-weight: bold; border-radius: 0 20px 20px 0; cursor: pointer; }
     .char-card { position: relative; background: #fff; padding: 1.2rem; border-radius: 20px; z-index: 2; transition: transform 0.3s ease; border: 2px solid #fff; }
     .char-card.swiped { transform: translateX(-80px); }
-    
+
     .char-header { display: flex; align-items: center; gap: 10px; margin-bottom: 0.8rem; border-bottom: 2px dashed var(--border-color); padding-bottom: 0.8rem; }
     .char-big { font-size: 2.2rem; font-weight: 900; color: #D48C9E; background: #FFF0F5; width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-family: 'DFKai-SB', 'BiauKai', serif; }
     .char-info { flex-grow: 1; }
     .char-pinyin { font-size: 1.1rem; font-weight: 800; }
     .char-radical { font-size: 0.8rem; color: #fff; background: var(--m-blue); padding: 2px 6px; border-radius: 8px; margin-left: 5px; }
 
-    /* === 完美仿照範例的田字格 (標楷體、直行) === */
+    /* === 橫式聽寫田字格（字與注音對準，可個別點擊隱藏） === */
     .test-panel { background: #fff; padding: 1.5rem; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 1rem; }
-    
-    .tian-page-wrapper {
-      background: #fff; padding: 15px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-      display: flex; flex-direction: row-reverse; justify-content: center; gap: 0;
-      overflow-x: auto;
+
+    .dict-grid-wrapper {
+      background: #fff; padding: 20px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
-    
-    .tian-col { display: flex; flex-direction: column; border-left: 1.5px solid #333; border-top: 1.5px solid #333; border-bottom: 1.5px solid #333; }
-    .tian-col:first-child { border-right: 1.5px solid #333; }
-    
-    .tian-cell-wrap { display: flex; flex-direction: row; width: 68px; height: 68px; border-bottom: 1.5px solid #333; cursor: pointer; user-select: none; background: #fff; }
-    .tian-cell-wrap:last-child { border-bottom: none; }
-    
-    .tian-char-box { width: 46px; height: 100%; position: relative; border-right: 1px solid #333; display: flex; align-items: center; justify-content: center; }
-    .tian-char-box::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; border-top: 1px dashed #888; z-index: 1;}
-    .tian-char-box::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px dashed #888; z-index: 1;}
-    .tian-char-text { position: relative; z-index: 2; font-size: 2rem; font-weight: normal; color: #000; font-family: 'DFKai-SB', 'BiauKai', serif; transition: 0.2s; }
-    
-    .tian-zy-box { width: 22px; height: 100%; position: relative; display: flex; align-items: center; justify-content: center; }
-    .tian-zy-box::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px dashed #aaa; z-index: 1;}
-    .tian-zy-text { position: relative; z-index: 2; font-size: 0.75rem; color: #000; font-family: 'DFKai-SB', 'BiauKai', serif; display: flex; flex-direction: column; align-items: center; line-height: 1.1; }
-    .tian-zy-text span { display: block; }
-    
+    .dict-grid {
+      display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px 18px;
+    }
+    .word-group { display: inline-flex; break-inside: avoid; }
+    .dict-cell { display: flex; flex-direction: column; align-items: center; }
+    .dict-cell + .dict-cell { margin-left: 2px; }
+
+    .dict-zy-box {
+      height: 24px; min-width: 66px; display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; font-weight: 700; color: #333; font-family: 'DFKai-SB', 'BiauKai', serif;
+      cursor: pointer; user-select: none; letter-spacing: 1px;
+    }
+    .dict-char-box {
+      width: 66px; height: 66px; border: 1.5px solid #333; position: relative;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      user-select: none; background: #fff;
+    }
+    .dict-char-box::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; border-top: 1px dashed #888; z-index: 1; }
+    .dict-char-box::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px dashed #888; z-index: 1; }
+    .dict-char-text {
+      position: relative; z-index: 2; font-size: 2rem; font-weight: normal; color: #000;
+      font-family: 'DFKai-SB', 'BiauKai', serif; transition: 0.2s;
+    }
+
     .text-hidden { color: transparent !important; }
 
     /* 字典區 */
     .dict-result { background: #fff; padding: 1.5rem; border-radius: 20px; border: 2px solid var(--m-blue); margin-top: 1rem; min-height: 150px; }
     .dict-result-text { font-size: 1.2rem; line-height: 1.8; color: #333; margin-top: 1rem; font-family: 'DFKai-SB', 'BiauKai', serif; }
+    .dict-result-text ul { padding-left: 1.4rem; margin: 4px 0 10px; }
     .dict-result-text h4 { color: var(--m-purple); margin-bottom: 5px; }
-    
+
     .mistake-card { background: #FFF9E6; border-left: 5px solid var(--m-yellow); padding: 1rem; border-radius: 10px; margin-bottom: 10px; }
     .mistake-char { font-size: 1.8rem; font-weight: 900; color: #D48C9E; font-family: 'DFKai-SB', 'BiauKai', serif; }
 
     /* 資源連結區 */
     .link-card { background: #fff; padding: 1.2rem; border-radius: 20px; border: 2px solid var(--border-color); margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;}
     .link-desc { font-size: 0.95rem; color: #5D5D5D; margin-top: 8px; padding: 10px; border-radius: 12px; font-weight: 700; line-height: 1.4; }
-    .desc-color-0 { background: #E2F0CB; } 
-    .desc-color-1 { background: #FFDAC1; } 
-    .desc-color-2 { background: #B5EAD7; } 
+    .desc-color-0 { background: #E2F0CB; }
+    .desc-color-1 { background: #FFDAC1; }
+    .desc-color-2 { background: #B5EAD7; }
 
-    /* 列印設定 */
+    /* 列印設定：橫式 */
     @media print {
       body { background: #fff !important; }
       header, nav, .lesson-selector-bar, .no-print { display: none !important; }
       main { max-width: 100%; padding: 0; }
-      .test-panel, .tian-page-wrapper { box-shadow: none; border: none; padding: 0; overflow: visible; width: 100%; }
+      .test-panel { display: none !important; }
+      .dict-grid-wrapper { box-shadow: none; border: none; padding: 0; }
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-      .tian-col { border-color: #000 !important; }
-      .tian-cell-wrap { border-color: #000 !important; }
-      .tian-char-box { border-right: 1px solid #000 !important; }
-      .tian-char-box::before, .tian-char-box::after { border-color: #333 !important; }
-      .tian-zy-box::after { border-color: #666 !important; }
+      .dict-char-box { border-color: #000 !important; }
+      .dict-char-box::before, .dict-char-box::after { border-color: #333 !important; }
       .text-hidden { color: transparent !important; }
       .mistake-card { page-break-inside: avoid; border: 1px solid #ccc; background: #fff !important; }
     }
@@ -165,13 +170,14 @@
         <span>國語生字</span>
       </div>
     </div>
-    <div class="speed-wrap">
+    <div class="header-controls">
       <select id="speech-speed" class="speed-select" onchange="saveData()">
         <option value="0.5">🐢 語速慢 (0.5x)</option>
         <option value="0.75" selected>🚶 語速中 (0.75x)</option>
         <option value="1.0">🏃 語速快 (1.0x)</option>
         <option value="1.25">🐇 語速極快 (1.25x)</option>
       </select>
+      <button id="sound-toggle" class="sound-toggle-btn" onclick="toggleSound()">🔊 按鍵音效：開</button>
     </div>
   </header>
 
@@ -197,29 +203,36 @@
       <div id="lesson-content-area"></div>
     </div>
 
-    <!-- ✍️ 視圖 2: 聽寫與直行田字格 -->
+    <!-- ✍️ 視圖 2: 聽寫與橫式田字格 -->
     <div id="view-test" class="tab-content hidden">
       <div class="test-panel no-print">
-        <h2 style="color: var(--m-pink); margin-bottom: 0.5rem;">自動聽寫與直行田字格</h2>
+        <h2 style="color: var(--m-pink); margin-bottom: 0.5rem;">自動聽寫與橫式田字格</h2>
         <p style="font-size: 0.95rem; color: var(--text-light); margin-bottom: 1rem; line-height: 1.5;">
-          下方自動帶入本課圈詞，可自由修改。支援 A4 滿版直行排版（由右至左、標楷體、注音垂直對齊）。<br>
-          👉 <b>點擊格子內的國字或注音即可隱藏，方便列印考卷！</b>
+          下方自動帶入本課圈詞，可自由修改；列印時為橫式排版，文字與注音上下對準。<br>
+          👉 <b>點擊格子上方的注音或下方的國字，可分別讓文字或注音消失，方便列印聽寫考卷！</b>
         </p>
-        
+
         <select id="test-lesson-select" class="input-box" style="margin-bottom: 10px; font-weight: bold; cursor:pointer;" onchange="loadTestTerms()"></select>
-        <textarea id="test-terms-input" class="textarea-box" rows="3" placeholder="請輸入要考試的詞語..." onblur="generateVerticalGrid()"></textarea>
-        
+
+        <label style="font-weight: 800; color: var(--m-purple); font-size: 0.9rem; display:block; margin-bottom:4px;">📘 本課圈詞（自動帶入，可修改）：</label>
+        <textarea id="test-terms-input" class="textarea-box" rows="3" placeholder="請輸入要考試的詞語..." onblur="generateGrid()"></textarea>
+
+        <label style="font-weight: 800; color: var(--m-purple); font-size: 0.9rem; display:block; margin: 10px 0 4px;">➕ 加強聽寫（自訂加強字詞，會加在本課圈詞後面）：</label>
+        <textarea id="test-extra-input" class="textarea-box" rows="2" placeholder="輸入需要額外加強練習的字詞..." onblur="saveExtraTerms(); generateGrid();"></textarea>
+
         <div style="display: flex; gap: 10px; margin-top: 10px; justify-content: center; flex-wrap: wrap;">
-          <button class="btn btn-green" onclick="generateVerticalGrid()">✅ 更新下方田字格</button>
+          <button class="btn btn-green" onclick="generateGrid()">✅ 更新下方田字格</button>
           <button class="btn btn-pink" id="btn-play" onclick="toggleDictation()">▶️ 播放聽寫 (間隔5秒)</button>
-          <button class="btn btn-blue" onclick="window.print()">🖨️ 列印滿版田字格</button>
+          <button class="btn btn-blue" onclick="window.print()">🖨️ 列印橫式田字格</button>
         </div>
       </div>
 
-      <div id="grid-render-area" class="tian-page-wrapper print-show"></div>
+      <div class="dict-grid-wrapper">
+        <div id="grid-render-area" class="dict-grid"></div>
+      </div>
     </div>
 
-    <!-- 🔍 視圖 3: 線上查字典 (雙軌修復 + 內建直出) -->
+    <!-- 🔍 視圖 3: 線上查字典 -->
     <div id="view-dict" class="tab-content hidden">
       <div class="test-panel no-print">
         <h2 style="color: var(--m-purple); margin-bottom: 1rem;">線上國語字典 (萌典直接顯示)</h2>
@@ -251,7 +264,7 @@
       <div id="mistakes-container" class="print-show"></div>
     </div>
 
-    <!-- 🔗 視圖 5: 資源連結 (含顏色說明) -->
+    <!-- 🔗 視圖 5: 資源連結 -->
     <div id="view-links" class="tab-content hidden">
       <div class="test-panel no-print" style="margin-bottom: 1rem;">
         <h2 style="color: var(--m-blue); margin-bottom: 1rem;">新增實用連結與說明</h2>
@@ -296,12 +309,13 @@
     ];
 
     const defaultData = {
-      grade: "五", semester: "上", publisher: "康軒", speed: "0.75",
+      grade: "五", semester: "上", publisher: "康軒", speed: "0.75", soundEnabled: true,
       lessons: Array.from({length: 12}, (_, i) => ({
         id: i + 1,
         title: lessonNames[i],
         summary: i === 0 ? "這是一篇關於非洲瘧疾與蚊帳的故事，提醒我們要懂得感恩與助人。" : "",
         batchText: i === 0 ? "蚊,ㄨㄣˊ,虫部,蚊子，蚊帳\n帳,ㄓㄤˋ,巾部,蚊帳，帳篷\n洲,ㄓㄡ,水部,非洲，亞洲\n瘧,ㄋㄩㄝˋ,疒部,瘧疾，瘧蚊\n疾,ㄐㄧˊ,疒部,疾病，疾走\n死,ㄙˇ,歹部,死亡，死板\n叮,ㄉㄧㄥ,口部,叮咬，叮嚀\n鼓,ㄍㄨˇ,鼓部,鼓起，鼓勵\n募,ㄇㄨˋ,力部,募集，募款\n集,ㄐㄧˊ,隹部,聚集，集中\n寄,ㄐㄧˋ,宀部,寄信，寄託\n贈,ㄗㄥˋ,貝部,贈送，捐贈\n賣,ㄇㄞˋ,貝部,買賣，拍賣\n獎,ㄐㄧㄤˇ,大部,獎狀，獎金\n狀,ㄓㄨㄤˋ,犬部,狀態，獎狀\n誌,ㄓˋ,言部,雜誌，日誌\n基,ㄐㄧ,土部,基金會，基礎\n潛,ㄑㄧㄢˊ,水部,潛力，潛水" : "",
+        extraTerms: "",
         chars: i === 0 ? [
           { char: "蚊", zhuyin: "ㄨㄣˊ", rad: "虫部", terms: "蚊子，蚊帳", note: "右邊是文，不要多一撇" },
           { char: "帳", zhuyin: "ㄓㄤˋ", rad: "巾部", terms: "蚊帳，帳篷", note: "" }
@@ -324,7 +338,10 @@
       } else {
         appData = JSON.parse(JSON.stringify(defaultData));
       }
-      
+
+      if (typeof appData.soundEnabled === 'undefined') appData.soundEnabled = true;
+      appData.lessons.forEach(l => { if (typeof l.extraTerms === 'undefined') l.extraTerms = ""; });
+
       if(appData.lessons[0].chars.length <= 2 && appData.lessons[0].batchText.length > 50) {
           parseBatchText(1, appData.lessons[0].batchText);
       }
@@ -334,7 +351,7 @@
       renderLessonView();
       renderLinks();
       renderMistakes();
-      loadTestTerms(); 
+      loadTestTerms();
     };
 
     function saveData() {
@@ -350,13 +367,14 @@
       document.getElementById('sel-semester').value = appData.semester;
       document.getElementById('sel-publisher').value = appData.publisher;
       document.getElementById('speech-speed').value = appData.speed || "0.75";
+      updateSoundToggleLabel();
     }
 
     function initSelectors() {
       const selLesson = document.getElementById('lesson-select');
       const selTest = document.getElementById('test-lesson-select');
       selLesson.innerHTML = ''; selTest.innerHTML = '';
-      
+
       appData.lessons.forEach(l => {
         let opt = `<option value="${l.id}">${l.title}</option>`;
         selLesson.innerHTML += opt;
@@ -373,7 +391,7 @@
       event.target.classList.add('active');
       if(tabId === 'view-mistakes') renderMistakes();
       if(tabId === 'view-test') loadTestTerms();
-      window.scrollTo(0, 0); 
+      window.scrollTo(0, 0);
     }
 
     // === 📖 課文生字渲染 (標題可直接修改) ===
@@ -381,13 +399,13 @@
       currentLessonId = parseInt(document.getElementById('lesson-select').value);
       const lesson = appData.lessons.find(l => l.id === currentLessonId);
       const container = document.getElementById('lesson-content-area');
-      
-      const colorClass = `color-${((lesson.id - 1) % 5) + 1}`; 
-      
+
+      const colorClass = `color-${((lesson.id - 1) % 5) + 1}`;
+
       let html = `
         <div class="lesson-title-display ${colorClass}" contenteditable="true" onblur="updateLessonTitle(${lesson.id}, this.innerText)">${lesson.title}</div>
         <textarea class="textarea-box" rows="2" placeholder="在此輸入課文大意 (點擊外側自動存檔)..." onblur="saveLessonData(${lesson.id}, 'summary', this.value)">${lesson.summary}</textarea>
-        
+
         <details class="batch-details no-print" style="margin-top: 1rem;">
           <summary>➕ 展開批次匯入生字 (格式：生字,注音,部首,圈詞)</summary>
           <textarea id="batch-${lesson.id}" class="textarea-box" rows="4" style="margin-top:0.5rem;">${lesson.batchText}</textarea>
@@ -420,10 +438,10 @@
 
     function updateLessonTitle(lId, newTitle) {
       const l = appData.lessons.find(x => x.id === lId);
-      if(l) { 
-        l.title = newTitle.trim(); 
-        saveData(); 
-        initSelectors(); 
+      if(l) {
+        l.title = newTitle.trim();
+        saveData();
+        initSelectors();
       }
     }
 
@@ -431,12 +449,12 @@
       const l = appData.lessons.find(x => x.id === lId);
       if(l) { l[key] = val; saveData(); }
     }
-    
+
     function saveCharData(lId, cIdx, key, val) {
       const l = appData.lessons.find(x => x.id === lId);
-      if(l && l.chars[cIdx]) { 
-        l.chars[cIdx][key] = val; 
-        saveData(); 
+      if(l && l.chars[cIdx]) {
+        l.chars[cIdx][key] = val;
+        saveData();
       }
     }
 
@@ -452,7 +470,7 @@
       let stX = parseFloat(el.dataset.x);
       let enX = e.changedTouches[0].clientX;
       let card = el.querySelector('.char-card');
-      if (stX - enX > 40) { card.classList.add('swiped'); } 
+      if (stX - enX > 40) { card.classList.add('swiped'); }
       else { card.classList.remove('swiped'); }
     }
 
@@ -461,7 +479,7 @@
       parseBatchText(lId, text);
       renderLessonView();
     }
-    
+
     function parseBatchText(lId, text) {
       const l = appData.lessons.find(x => x.id === lId);
       if(!l) return;
@@ -506,7 +524,7 @@
       }
     }
 
-    // === ✍️ 聽寫與直行田字格 (波波注音標準直書) ===
+    // === ✍️ 聽寫與橫式田字格 ===
     function loadTestTerms() {
       const tId = parseInt(document.getElementById('test-lesson-select').value);
       const l = appData.lessons.find(x => x.id === tId);
@@ -517,71 +535,62 @@
         });
       }
       document.getElementById('test-terms-input').value = termsArray.join(' ');
-      generateVerticalGrid();
+      document.getElementById('test-extra-input').value = (l && l.extraTerms) || '';
+      generateGrid();
     }
 
-    function generateVerticalGrid() {
-      const text = document.getElementById('test-terms-input').value;
-      const chars = text.replace(/[,，、]/g, ' ').split('');
-      
+    function saveExtraTerms() {
+      const tId = parseInt(document.getElementById('test-lesson-select').value);
+      const l = appData.lessons.find(x => x.id === tId);
+      if(l) {
+        l.extraTerms = document.getElementById('test-extra-input').value;
+        saveData();
+      }
+    }
+
+    function combineAllTerms() {
+      const main = document.getElementById('test-terms-input').value || '';
+      const extra = document.getElementById('test-extra-input').value || '';
+      return (main + ' ' + extra).trim();
+    }
+
+    function splitWords(text) {
+      return text.replace(/[,，、]/g, ' ').split(/\s+/).filter(Boolean);
+    }
+
+    function findZhuyin(ch) {
+      for (const l of appData.lessons) {
+        const found = l.chars.find(c => c.char === ch);
+        if (found && found.zhuyin) return found.zhuyin;
+      }
+      return '';
+    }
+
+    function generateGrid() {
+      const words = splitWords(combineAllTerms());
       const area = document.getElementById('grid-render-area');
       area.innerHTML = '';
-      
-      const rowsPerCol = 8;
-      const totalCols = 10;
-      
-      let allCellsData = [];
-      chars.forEach(char => {
-        let zy = "";
-        const tId = parseInt(document.getElementById('test-lesson-select').value);
-        const l = appData.lessons.find(x => x.id === tId);
-        if(l) {
-            const found = l.chars.find(c => c.char === char);
-            if(found) zy = found.zhuyin;
-        }
-        allCellsData.push({ char: char === ' ' ? '' : char, zhuyin: zy });
-      });
 
-      const totalCellsNeeded = rowsPerCol * totalCols;
-      while(allCellsData.length < totalCellsNeeded) {
-        allCellsData.push({ char: '', zhuyin: '' });
+      if (words.length === 0) {
+        area.innerHTML = '<p style="color:#aaa; padding:1rem;">請於上方輸入圈詞或加強字詞，再點擊「更新下方田字格」。</p>';
+        return;
       }
 
-      for (let c = 0; c < totalCols; c++) {
-        let colDiv = document.createElement('div');
-        colDiv.className = 'tian-col';
-        
-        for (let r = 0; r < rowsPerCol; r++) {
-          let dataIndex = c * rowsPerCol + r;
-          let cellData = allCellsData[dataIndex] || { char: '', zhuyin: '' };
-          
-          colDiv.innerHTML += `
-            <div class="tian-cell-wrap">
-              <div class="tian-char-box" onclick="this.querySelector('.tian-char-text').classList.toggle('text-hidden')">
-                <span class="tian-char-text">${cellData.char}</span>
-              </div>
-              <div class="tian-zy-box" onclick="this.querySelector('.tian-zy-text').classList.toggle('text-hidden')">
-                <span class="tian-zy-text">${formatZhuyinVertical(cellData.zhuyin)}</span>
-              </div>
-            </div>
+      words.forEach(word => {
+        const wg = document.createElement('div');
+        wg.className = 'word-group';
+        for (const ch of word) {
+          const zy = findZhuyin(ch);
+          const cell = document.createElement('div');
+          cell.className = 'dict-cell';
+          cell.innerHTML = `
+            <div class="dict-zy-box" onclick="this.querySelector('span').classList.toggle('text-hidden')"><span>${zy}</span></div>
+            <div class="dict-char-box" onclick="this.querySelector('span').classList.toggle('text-hidden')"><span class="dict-char-text">${ch}</span></div>
           `;
+          wg.appendChild(cell);
         }
-        area.appendChild(colDiv);
-      }
-    }
-
-    function formatZhuyinVertical(zy) {
-      if(!zy) return "";
-      let res = "";
-      for(let i=0; i<zy.length; i++) {
-        let char = zy[i];
-        if("ˊˇˋ˙".includes(char)) {
-          res += `<span style="font-size:0.6rem; margin-left:-2px;">${char}</span>`;
-        } else {
-          res += `<span>${char}</span>`;
-        }
-      }
-      return res;
+        area.appendChild(wg);
+      });
     }
 
     // 聽寫語音控制
@@ -596,10 +605,10 @@
         btn.classList.remove('btn-green'); btn.classList.add('btn-pink');
         return;
       }
-      
-      const terms = document.getElementById('test-terms-input').value.split(/[,，、\s]+/).filter(Boolean);
+
+      const terms = splitWords(combineAllTerms());
       if(terms.length === 0) return alert("請先輸入詞語！");
-      
+
       isPlaying = true;
       btn.innerText = "⏹️ 停止測驗";
       btn.classList.remove('btn-pink'); btn.classList.add('btn-green');
@@ -611,7 +620,7 @@
         await sleep(1000);
         await playSpeech(terms[i]);
         if(!isPlaying) break;
-        
+
         for(let s=5; s>0; s--) {
           if(!isPlaying) break;
           btn.innerText = `⏹️ 倒數 ${s}秒 (第 ${i+1}/${terms.length} 題)`;
@@ -620,7 +629,7 @@
       }
       if(isPlaying) {
         await playSpeech("測驗結束，大家辛苦了！");
-        toggleDictation(); 
+        toggleDictation();
       }
     }
 
@@ -645,44 +654,64 @@
 
     function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-    // === 🔍 線上查字典 (萌典直接顯示，附帶教育部官方備用按鈕) ===
+    // === 🔍 線上查字典（改用正確的萌典 /uni/ 端點，並附備援方案）===
     async function searchMoedictRobust() {
       const q = document.getElementById('dict-input').value.trim();
       const out = document.getElementById('dict-output');
       if(!q) return;
       out.innerHTML = `<span style="color:var(--m-purple); font-weight:bold;">🔍 正在查詢中...</span>`;
-      
-      try {
-        const res = await fetch(`https://www.moedict.tw/a/${encodeURIComponent(q)}.json`);
-        if(!res.ok) throw new Error('not found');
-        const data = await res.json();
-        
-        let html = `<strong>【${data.title || q}】</strong><br>`;
-        if(data.radical) html += `<span style="font-size:1rem; color:#888;">部首：${data.radical}部 | 筆畫：${data.stroke_count || ''}畫</span><br><br>`;
-        
-        if(data.heteronyms && Array.isArray(data.heteronyms)) {
-          data.heteronyms.forEach(h => {
-            if(h.bopomofo) html += `<span style="color:var(--m-pink); font-weight:800; font-size:1.2rem;">[${h.bopomofo}]</span><br>`;
-            if(h.definitions && Array.isArray(h.definitions)) {
-              html += `<ul>`;
-              h.definitions.forEach((d, idx) => {
-                if(d && d.def) {
-                  html += `<li>${d.def.replace(/`|~/g, '')}</li>`;
-                }
-              });
-              html += `</ul>`;
-            }
-          });
+
+      const endpoints = [
+        `https://www.moedict.tw/uni/${encodeURIComponent(q)}.json`,
+        `https://www.moedict.tw/a/${encodeURIComponent(q)}.json`
+      ];
+
+      for (const url of endpoints) {
+        try {
+          const res = await fetch(url);
+          if (!res.ok) continue;
+          const data = await res.json();
+          const heteronyms = data.heteronyms || data.h;
+          if (!data || !heteronyms || !Array.isArray(heteronyms) || heteronyms.length === 0) continue;
+          renderDictResult(data, q);
+          return;
+        } catch (e) {
+          // 嘗試下一個端點
         }
-        out.innerHTML = html;
-      } catch(e) {
-        // 若瀏覽器安全性阻擋跨域，直接呈現一鍵連至教育部官網的按鈕
-        out.innerHTML = `
-          <span style="color:#d9534f; font-weight:bold;">⚠️ 系統已自動切換至教育部官方辭典。</span><br><br>
-          請點擊下方按鈕直接查詢「${q}」：<br><br>
-          <a href="https://dict.revised.moe.edu.tw/search.jsp?md=1&word=${encodeURIComponent(q)}" target="_blank" class="btn btn-pink" style="text-decoration:none; font-size:1.1rem; padding: 0.8rem 1.5rem;">🔗 前往教育部國語辭典查「${q}」</a>
-        `;
       }
+
+      out.innerHTML = fallbackHtml(q);
+    }
+
+    function renderDictResult(data, q) {
+      const out = document.getElementById('dict-output');
+      let html = `<strong>【${data.title || q}】</strong><br>`;
+      if (data.radical) html += `<span style="font-size:1rem; color:#888;">部首：${data.radical}部${data.stroke_count ? (' | 筆畫：' + data.stroke_count + '畫') : ''}</span><br><br>`;
+
+      const heteronyms = data.heteronyms || data.h;
+      heteronyms.forEach(h => {
+        const bopomofo = h.bopomofo || h.b;
+        const definitions = h.definitions || h.d;
+        if (bopomofo) html += `<span style="color:var(--m-pink); font-weight:800; font-size:1.2rem;">[${bopomofo}]</span><br>`;
+        if (definitions && Array.isArray(definitions)) {
+          html += `<ul>`;
+          definitions.forEach(d => {
+            const def = (d && (d.def || d.f)) || '';
+            if (def) html += `<li>${def.replace(/`|~/g, '')}</li>`;
+          });
+          html += `</ul>`;
+        }
+      });
+
+      out.innerHTML = html || fallbackHtml(q);
+    }
+
+    function fallbackHtml(q) {
+      return `
+        <span style="color:#d9534f; font-weight:bold;">⚠️ 查無完整線上資料，請直接前往教育部官方辭典查詢。</span><br><br>
+        請點擊下方按鈕直接查詢「${q}」：<br><br>
+        <a href="https://dict.revised.moe.edu.tw/search.jsp?md=1&word=${encodeURIComponent(q)}" target="_blank" class="btn btn-pink" style="text-decoration:none; font-size:1.1rem; padding: 0.8rem 1.5rem;">🔗 前往教育部國語辭典查「${q}」</a>
+      `;
     }
 
     function copyDictText() {
@@ -694,7 +723,7 @@
       });
     }
 
-    // === 🔗 資源連結 (含不同背景顏色說明) ===
+    // === 🔗 資源連結 ===
     function renderLinks() {
       const container = document.getElementById('links-container');
       container.innerHTML = '';
@@ -737,7 +766,7 @@
       }
     }
 
-    // === ⚙️ 備份與還原 (Blob 完美修復) ===
+    // === ⚙️ 備份與還原 ===
     function exportJSON() {
       saveData();
       const blob = new Blob([JSON.stringify(appData, null, 2)], { type: "application/json;charset=utf-8" });
@@ -762,7 +791,7 @@
           appData = JSON.parse(evt.target.result);
           saveData();
           alert("資料還原成功！");
-          location.reload(); 
+          location.reload();
         } catch(err) { alert("檔案格式錯誤！"); }
       };
       reader.readAsText(file);
@@ -774,7 +803,53 @@
         location.reload();
       }
     }
+
+    // === 🔔 按鍵音效 ===
+    let audioCtx = null;
+    function ensureAudioCtx() {
+      if (!audioCtx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) audioCtx = new AC();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playClickSound() {
+      if (!appData || !appData.soundEnabled) return;
+      const ctx = ensureAudioCtx();
+      if (!ctx) return;
+      try {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = 880;
+        gain.gain.setValueAtTime(0.16, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.13);
+      } catch (e) { /* 忽略音效錯誤 */ }
+    }
+
+    function toggleSound() {
+      appData.soundEnabled = !appData.soundEnabled;
+      saveData();
+      updateSoundToggleLabel();
+      playClickSound();
+    }
+
+    function updateSoundToggleLabel() {
+      const btn = document.getElementById('sound-toggle');
+      if (!btn) return;
+      btn.innerText = appData.soundEnabled ? "🔊 按鍵音效：開" : "🔇 按鍵音效：關";
+    }
+
+    document.addEventListener('click', function (e) {
+      const target = e.target.closest('.btn, .nav-btn, .dict-char-box, .dict-zy-box, .lesson-title-display, .delete-bg, select');
+      if (target) playClickSound();
+    }, true);
   </script>
 </body>
 </html>
-
