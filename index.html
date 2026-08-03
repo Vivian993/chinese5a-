@@ -338,7 +338,7 @@
     ];
 
     const defaultData = {
-      grade: "五", semester: "上", publisher: "康軒", speed: "0.75", soundEnabled: true,
+      grade: "五", semester: "上", publisher: "康軒", speed: "0.75", soundEnabled: true, zhuyinCache: {},
       lessons: Array.from({length: 12}, (_, i) => ({
         id: i + 1,
         title: lessonNames[i],
@@ -369,6 +369,7 @@
       }
 
       if (typeof appData.soundEnabled === 'undefined') appData.soundEnabled = true;
+      if (!appData.zhuyinCache) appData.zhuyinCache = {};
       appData.lessons.forEach(l => { if (typeof l.extraTerms === 'undefined') l.extraTerms = ""; });
 
       if(appData.lessons[0].chars.length <= 2 && appData.lessons[0].batchText.length > 50) {
@@ -587,12 +588,55 @@
       return text.replace(/[,，、]/g, ' ').split(/\s+/).filter(Boolean);
     }
 
-    function findZhuyin(ch) {
+    function findZhuyin(ch, preferredLessonId) {
+      if (preferredLessonId) {
+        const pl = appData.lessons.find(x => x.id === preferredLessonId);
+        if (pl) {
+          const found = pl.chars.find(c => c.char === ch);
+          if (found && found.zhuyin) return found.zhuyin;
+        }
+      }
       for (const l of appData.lessons) {
         const found = l.chars.find(c => c.char === ch);
         if (found && found.zhuyin) return found.zhuyin;
       }
+      if (appData.zhuyinCache && appData.zhuyinCache[ch]) return appData.zhuyinCache[ch];
       return '';
+    }
+
+    // 針對本機資料庫查不到注音的字，自動向萌典線上查詢並快取起來，之後不用重查
+    async function fetchZhuyinForChar(ch) {
+      try {
+        const res = await fetch(`https://www.moedict.tw/uni/${encodeURIComponent(ch)}.json`);
+        if (!res.ok) return null;
+        const data = await res.json();
+        const het = data.heteronyms || data.h;
+        if (het && het[0]) return het[0].bopomofo || het[0].b || null;
+      } catch (e) { /* 查無網路或查無資料，略過 */ }
+      return null;
+    }
+
+    async function fetchMissingZhuyin(cells) {
+      const missing = [...new Set(
+        cells.filter(c => c.type === 'char' && !c.zhuyin).map(c => c.char)
+      )];
+      if (missing.length === 0) return;
+
+      await Promise.all(missing.map(async (ch) => {
+        if (appData.zhuyinCache[ch]) return;
+        const zy = await fetchZhuyinForChar(ch);
+        if (zy) {
+          appData.zhuyinCache[ch] = zy;
+          document.querySelectorAll(`.tian-cell-wrap[data-char="${cssEscape(ch)}"] .tian-zy-text`).forEach(el => {
+            if (!el.innerHTML.trim()) el.innerHTML = formatZhuyinVertical(zy);
+          });
+        }
+      }));
+      saveData();
+    }
+
+    function cssEscape(s) {
+      return (window.CSS && CSS.escape) ? CSS.escape(s) : s.replace(/["\\]/g, '\\$&');
     }
 
     function formatZhuyinVertical(zy) {
@@ -647,10 +691,11 @@
       }
 
       // 組成一整串「格子」資料：字詞之間插入小圓點分隔格
+      const currentLessonForZy = parseInt(document.getElementById('test-lesson-select').value);
       let cells = [];
       words.forEach((word, wIdx) => {
         for (const ch of word) {
-          cells.push({ type: 'char', char: ch, zhuyin: findZhuyin(ch) });
+          cells.push({ type: 'char', char: ch, zhuyin: findZhuyin(ch, currentLessonForZy) });
         }
         if (wIdx < words.length - 1) cells.push({ type: 'sep' });
       });
@@ -686,6 +731,7 @@
           cellEl.className = 'tian-cell-wrap';
           const ch = data.char || '';
           const zy = data.zhuyin || '';
+          cellEl.setAttribute('data-char', ch);
           cellEl.innerHTML = `
             <div class="tian-char-box" onclick="this.querySelector('.tian-char-text').classList.toggle('text-hidden')">
               <span class="tian-char-text">${ch}</span>
@@ -699,6 +745,7 @@
       });
 
       area.appendChild(gridDiv);
+      fetchMissingZhuyin(cells);
     }
 
     // 聽寫語音控制
