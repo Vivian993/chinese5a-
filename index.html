@@ -85,35 +85,61 @@
     .char-pinyin { font-size: 1.1rem; font-weight: 800; }
     .char-radical { font-size: 0.8rem; color: #fff; background: var(--m-blue); padding: 2px 6px; border-radius: 8px; margin-left: 5px; }
 
-    /* === 橫式聽寫田字格（字與注音對準，可個別點擊隱藏） === */
+    /* === 直式聽寫田字格（由右至左、點狀格線，仿傳統生字練習單） === */
     .test-panel { background: #fff; padding: 1.5rem; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 1rem; }
 
-    .dict-grid-wrapper {
-      background: #fff; padding: 20px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    .tian-page-wrapper {
+      background: #fff; padding: 15px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      display: flex; flex-direction: row-reverse; justify-content: flex-start; align-items: flex-start; gap: 0;
+      overflow-x: auto;
     }
-    .dict-grid {
-      display: flex; flex-wrap: wrap; align-items: flex-end; gap: 16px 18px;
-    }
-    .word-group { display: inline-flex; break-inside: avoid; }
-    .dict-cell { display: flex; flex-direction: column; align-items: center; }
-    .dict-cell + .dict-cell { margin-left: 2px; }
 
-    .dict-zy-box {
-      height: 24px; min-width: 66px; display: flex; align-items: center; justify-content: center;
-      font-size: 0.9rem; font-weight: 700; color: #333; font-family: 'DFKai-SB', 'BiauKai', serif;
-      cursor: pointer; user-select: none; letter-spacing: 1px;
+    .tian-sidebar {
+      writing-mode: vertical-rl; text-orientation: upright; white-space: nowrap;
+      padding: 6px 14px 6px 4px; margin-left: 12px; flex-shrink: 0;
     }
-    .dict-char-box {
-      width: 66px; height: 66px; border: 1.5px solid #333; position: relative;
-      display: flex; align-items: center; justify-content: center; cursor: pointer;
-      user-select: none; background: #fff;
+    .tian-sidebar div { color: #2b5faa; font-weight: 900; line-height: 1.55; }
+    .tian-sidebar div.sb-small { font-size: 0.85rem; font-weight: 700; }
+    .tian-sidebar div.sb-big { font-size: 1.3rem; }
+    .tian-sidebar div::before { content: '・'; }
+
+    /* 使用 CSS Grid 明確指定每格的欄/列位置，格子大小固定，內容絕不會影響格線位置 */
+    .tian-grid {
+      display: grid; flex-shrink: 0;
+      border-top: 1.2px dotted #555; border-left: 1.2px dotted #555;
     }
-    .dict-char-box::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; border-top: 1px dashed #888; z-index: 1; }
-    .dict-char-box::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px dashed #888; z-index: 1; }
-    .dict-char-text {
+
+    .tian-cell-wrap {
+      box-sizing: border-box; width: 76px; height: 76px;
+      display: flex; flex-direction: row; align-items: stretch;
+      border-right: 1.2px dotted #555; border-bottom: 1.2px dotted #555;
+      cursor: default; user-select: none; background: #fff; overflow: hidden;
+    }
+    .tian-cell-wrap.tian-sep { justify-content: center; align-items: center; }
+    .tian-sep-dot { color: #bbb; font-size: 0.7rem; }
+
+    .tian-char-box {
+      width: 52px; height: 100%; position: relative; border-right: 1px dotted #999;
+      display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;
+    }
+    .tian-char-box::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; border-top: 1px dotted #bbb; z-index: 1; }
+    .tian-char-box::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px dotted #bbb; z-index: 1; }
+    .tian-char-text {
       position: relative; z-index: 2; font-size: 2rem; font-weight: normal; color: #000;
       font-family: 'DFKai-SB', 'BiauKai', serif; transition: 0.2s;
     }
+
+    /* 注音欄：符號由上到下排列，聲調符號改附標在最後一個符號右上角，更緊湊、更接近課本排版 */
+    .tian-zy-box {
+      flex: 1; height: 100%; position: relative; display: flex; align-items: center; justify-content: center; cursor: pointer; min-width: 0;
+    }
+    .tian-zy-text {
+      position: relative; z-index: 2; color: #000; font-family: 'DFKai-SB', 'BiauKai', serif;
+      display: flex; flex-direction: column; align-items: center; line-height: 1.15;
+    }
+    .tian-zy-text .zy-line { display: block; font-size: 0.78rem; }
+    .tian-zy-text .zy-tone-wrap { position: relative; }
+    .tian-zy-text .zy-tone { position: absolute; top: -3px; right: -9px; font-size: 0.6rem; }
 
     .text-hidden { color: transparent !important; }
 
@@ -126,6 +152,7 @@
     .mistake-card { background: #FFF9E6; border-left: 5px solid var(--m-yellow); padding: 1rem; border-radius: 10px; margin-bottom: 10px; }
     .mistake-char { font-size: 1.8rem; font-weight: 900; color: #D48C9E; font-family: 'DFKai-SB', 'BiauKai', serif; }
 
+
     /* 資源連結區 */
     .link-card { background: #fff; padding: 1.2rem; border-radius: 20px; border: 2px solid var(--border-color); margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;}
     .link-desc { font-size: 0.95rem; color: #5D5D5D; margin-top: 8px; padding: 10px; border-radius: 12px; font-weight: 700; line-height: 1.4; }
@@ -133,16 +160,20 @@
     .desc-color-1 { background: #FFDAC1; }
     .desc-color-2 { background: #B5EAD7; }
 
-    /* 列印設定：橫式 */
+    /* 列印設定：直式文字、橫向紙張，欄數才能排得多 */
     @media print {
+      @page { size: A4 landscape; margin: 10mm; }
       body { background: #fff !important; }
       header, nav, .lesson-selector-bar, .no-print { display: none !important; }
       main { max-width: 100%; padding: 0; }
       .test-panel { display: none !important; }
-      .dict-grid-wrapper { box-shadow: none; border: none; padding: 0; }
+      .tian-page-wrapper { box-shadow: none; padding: 0; overflow: visible; }
+      .tian-grid { border-top: 1.2px dotted #000; border-left: 1.2px dotted #000; }
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-      .dict-char-box { border-color: #000 !important; }
-      .dict-char-box::before, .dict-char-box::after { border-color: #333 !important; }
+      .tian-cell-wrap { border-color: #000 !important; }
+      .tian-char-box { border-color: #333 !important; }
+      .tian-char-box::before, .tian-char-box::after { border-color: #555 !important; }
+      .tian-sidebar div { color: #000 !important; }
       .text-hidden { color: transparent !important; }
       .mistake-card { page-break-inside: avoid; border: 1px solid #ccc; background: #fff !important; }
     }
@@ -203,13 +234,13 @@
       <div id="lesson-content-area"></div>
     </div>
 
-    <!-- ✍️ 視圖 2: 聽寫與橫式田字格 -->
+    <!-- ✍️ 視圖 2: 聽寫與直式田字格 -->
     <div id="view-test" class="tab-content hidden">
       <div class="test-panel no-print">
-        <h2 style="color: var(--m-pink); margin-bottom: 0.5rem;">自動聽寫與橫式田字格</h2>
+        <h2 style="color: var(--m-pink); margin-bottom: 0.5rem;">自動聽寫與直式田字格</h2>
         <p style="font-size: 0.95rem; color: var(--text-light); margin-bottom: 1rem; line-height: 1.5;">
-          下方自動帶入本課圈詞，可自由修改；列印時為橫式排版，文字與注音上下對準。<br>
-          👉 <b>點擊格子上方的注音或下方的國字，可分別讓文字或注音消失，方便列印聽寫考卷！</b>
+          下方自動帶入本課圈詞，可自由修改；預設國字與注音都會顯示，列印時採直書、橫向紙張排版（由右至左），格線為點狀田字格。<br>
+          👉 <b>點擊格子中的國字或右側注音，可以把不想要的部分變不見，自訂聽寫考卷內容！</b>
         </p>
 
         <select id="test-lesson-select" class="input-box" style="margin-bottom: 10px; font-weight: bold; cursor:pointer;" onchange="loadTestTerms()"></select>
@@ -223,13 +254,11 @@
         <div style="display: flex; gap: 10px; margin-top: 10px; justify-content: center; flex-wrap: wrap;">
           <button class="btn btn-green" onclick="generateGrid()">✅ 更新下方田字格</button>
           <button class="btn btn-pink" id="btn-play" onclick="toggleDictation()">▶️ 播放聽寫 (間隔5秒)</button>
-          <button class="btn btn-blue" onclick="window.print()">🖨️ 列印橫式田字格</button>
+          <button class="btn btn-blue" onclick="window.print()">🖨️ 列印直式田字格（橫向紙張）</button>
         </div>
       </div>
 
-      <div class="dict-grid-wrapper">
-        <div id="grid-render-area" class="dict-grid"></div>
-      </div>
+      <div id="grid-render-area" class="tian-page-wrapper"></div>
     </div>
 
     <!-- 🔍 視圖 3: 線上查字典 -->
@@ -566,6 +595,47 @@
       return '';
     }
 
+    function formatZhuyinVertical(zy) {
+      if (!zy) return "";
+      const toneChars = "ˊˇˋ˙";
+      let tone = "";
+      let base = zy;
+      if (base.length && toneChars.includes(base[base.length - 1])) {
+        tone = base[base.length - 1];
+        base = base.slice(0, -1);
+      }
+      let html = "";
+      if (base.length === 0 && tone) {
+        return `<span class="zy-line">${tone}</span>`;
+      }
+      for (let i = 0; i < base.length; i++) {
+        const isLast = i === base.length - 1;
+        if (isLast && tone) {
+          html += `<span class="zy-line zy-tone-wrap">${base[i]}<span class="zy-tone">${tone}</span></span>`;
+        } else {
+          html += `<span class="zy-line">${base[i]}</span>`;
+        }
+      }
+      return html;
+    }
+
+    function buildSidebar() {
+      const tId = parseInt(document.getElementById('test-lesson-select').value);
+      const l = appData.lessons.find(x => x.id === tId);
+      if (!l) return '';
+      const parts = l.title.split('：');
+      const lessonNo = parts[0] || l.title;
+      const lessonName = parts[1] || '';
+      const lines = [
+        `<div class="sb-small">${appData.publisher}版</div>`,
+        `<div class="sb-small">${appData.grade}${appData.semester}國語</div>`,
+        `<div class="sb-big">${lessonNo}</div>`
+      ];
+      if (lessonName) lines.push(`<div class="sb-big">${lessonName}</div>`);
+      lines.push(`<div class="sb-small">生字聽寫練習單</div>`);
+      return `<div class="tian-sidebar">${lines.join('')}</div>`;
+    }
+
     function generateGrid() {
       const words = splitWords(combineAllTerms());
       const area = document.getElementById('grid-render-area');
@@ -576,21 +646,59 @@
         return;
       }
 
-      words.forEach(word => {
-        const wg = document.createElement('div');
-        wg.className = 'word-group';
+      // 組成一整串「格子」資料：字詞之間插入小圓點分隔格
+      let cells = [];
+      words.forEach((word, wIdx) => {
         for (const ch of word) {
-          const zy = findZhuyin(ch);
-          const cell = document.createElement('div');
-          cell.className = 'dict-cell';
-          cell.innerHTML = `
-            <div class="dict-zy-box" onclick="this.querySelector('span').classList.toggle('text-hidden')"><span>${zy}</span></div>
-            <div class="dict-char-box" onclick="this.querySelector('span').classList.toggle('text-hidden')"><span class="dict-char-text">${ch}</span></div>
-          `;
-          wg.appendChild(cell);
+          cells.push({ type: 'char', char: ch, zhuyin: findZhuyin(ch) });
         }
-        area.appendChild(wg);
+        if (wIdx < words.length - 1) cells.push({ type: 'sep' });
       });
+
+      const rowsPerCol = 10;
+      const totalCols = Math.max(8, Math.ceil(cells.length / rowsPerCol));
+      const totalCellsNeeded = rowsPerCol * totalCols;
+      while (cells.length < totalCellsNeeded) cells.push({ type: 'empty' });
+
+      area.insertAdjacentHTML('beforeend', buildSidebar());
+
+      // 用 CSS Grid 明確指定每一格的欄、列座標，內容多寡完全不影響格線位置，杜絕錯位問題
+      const gridDiv = document.createElement('div');
+      gridDiv.className = 'tian-grid';
+      gridDiv.style.gridTemplateColumns = `repeat(${totalCols}, 76px)`;
+      gridDiv.style.gridTemplateRows = `repeat(${rowsPerCol}, 76px)`;
+
+      cells.forEach((data, idx) => {
+        const dataCol = Math.floor(idx / rowsPerCol); // 資料上第幾欄（0 = 最先讀到的字）
+        const row = idx % rowsPerCol;
+        const gridCol = totalCols - dataCol; // 換算成畫面座標：由右至左排列，第 0 欄放在最右邊
+
+        const cellEl = document.createElement('div');
+        cellEl.style.gridColumn = String(gridCol);
+        cellEl.style.gridRow = String(row + 1);
+
+        if (data.type === 'sep') {
+          cellEl.className = 'tian-cell-wrap tian-sep';
+          cellEl.innerHTML = `<span class="tian-sep-dot">○</span>`;
+        } else if (data.type === 'empty') {
+          cellEl.className = 'tian-cell-wrap';
+        } else {
+          cellEl.className = 'tian-cell-wrap';
+          const ch = data.char || '';
+          const zy = data.zhuyin || '';
+          cellEl.innerHTML = `
+            <div class="tian-char-box" onclick="this.querySelector('.tian-char-text').classList.toggle('text-hidden')">
+              <span class="tian-char-text">${ch}</span>
+            </div>
+            <div class="tian-zy-box" onclick="this.querySelector('.tian-zy-text').classList.toggle('text-hidden')">
+              <span class="tian-zy-text">${formatZhuyinVertical(zy)}</span>
+            </div>
+          `;
+        }
+        gridDiv.appendChild(cellEl);
+      });
+
+      area.appendChild(gridDiv);
     }
 
     // 聽寫語音控制
@@ -847,7 +955,7 @@
     }
 
     document.addEventListener('click', function (e) {
-      const target = e.target.closest('.btn, .nav-btn, .dict-char-box, .dict-zy-box, .lesson-title-display, .delete-bg, select');
+      const target = e.target.closest('.btn, .nav-btn, .tian-char-box, .tian-zy-box, .lesson-title-display, .delete-bg, select');
       if (target) playClickSound();
     }, true);
   </script>
