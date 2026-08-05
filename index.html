@@ -80,7 +80,21 @@
     .char-card.swiped { transform: translateX(-80px); }
 
     .char-header { display: flex; align-items: center; gap: 10px; margin-bottom: 0.8rem; border-bottom: 2px dashed var(--border-color); padding-bottom: 0.8rem; }
-    .char-big { font-size: 2.2rem; font-weight: 900; color: #D48C9E; background: #FFF0F5; width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-family: 'DFKai-SB', 'BiauKai', serif; }
+    .char-big { font-size: 2.2rem; font-weight: 900; color: #D48C9E; background: #FFF0F5; width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; border-radius: 12px; font-family: 'DFKai-SB', 'BiauKai', serif; cursor: pointer; transition: 0.15s; }
+    .char-big:active { transform: scale(0.92); background: #FFE0EC; }
+
+    .terms-chips { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 5px; }
+    .term-chip { display: inline-block; background: #FFF0F5; color: #D48C9E; font-weight: 700; padding: 4px 10px; border-radius: 14px; font-size: 0.85rem; cursor: pointer; border: 1px solid #FFD6E5; }
+    .term-chip:active { transform: scale(0.93); background: #FFE0EC; }
+
+    .def-popup-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; z-index: 2000; padding: 20px; }
+    .def-popup-overlay.hidden { display: none !important; }
+    .def-popup-card { background: #fff; border-radius: 20px; max-width: 420px; width: 100%; max-height: 75vh; overflow-y: auto; padding: 1.2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+    .def-popup-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px dashed var(--border-color); padding-bottom: 0.6rem; margin-bottom: 0.6rem; }
+    #def-popup-title { font-size: 1.5rem; font-weight: 900; color: #D48C9E; font-family: 'DFKai-SB', 'BiauKai', serif; }
+    .def-popup-close { background: var(--m-pink); color: #fff; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 1rem; cursor: pointer; flex-shrink: 0; }
+    .def-popup-body { font-size: 1.05rem; line-height: 1.7; font-family: 'DFKai-SB', 'BiauKai', serif; color: #333; }
+    .def-popup-body ul { padding-left: 1.3rem; margin: 4px 0 10px; }
     .char-info { flex-grow: 1; }
     .char-pinyin { font-size: 1.1rem; font-weight: 800; }
     .char-radical { font-size: 0.8rem; color: #fff; background: var(--m-blue); padding: 2px 6px; border-radius: 8px; margin-left: 5px; }
@@ -89,6 +103,7 @@
     .test-panel { background: #fff; padding: 1.5rem; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 1rem; }
 
     .tian-page-wrapper {
+      --tian-cell: 76px;
       background: #fff; padding: 15px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05);
       display: flex; flex-direction: row-reverse; justify-content: flex-start; align-items: flex-start; gap: 0;
       overflow-x: auto;
@@ -96,11 +111,11 @@
 
     .tian-sidebar {
       writing-mode: vertical-rl; text-orientation: upright; white-space: nowrap;
-      padding: 6px 14px 6px 4px; margin-left: 12px; flex-shrink: 0;
+      padding: 4px 8px 4px 4px; margin-left: 8px; flex-shrink: 0;
     }
-    .tian-sidebar div { color: #2b5faa; font-weight: 900; line-height: 1.55; }
-    .tian-sidebar div.sb-small { font-size: 0.85rem; font-weight: 700; }
-    .tian-sidebar div.sb-big { font-size: 1.3rem; }
+    .tian-sidebar div { color: #2b5faa; font-weight: 900; line-height: 1.5; }
+    .tian-sidebar div.sb-small { font-size: 0.7rem; font-weight: 700; }
+    .tian-sidebar div.sb-big { font-size: 1.05rem; }
     .tian-sidebar div::before { content: '・'; }
 
     /* 使用 CSS Grid 明確指定每格的欄/列位置，格子大小固定，內容絕不會影響格線位置 */
@@ -110,7 +125,7 @@
     }
 
     .tian-cell-wrap {
-      box-sizing: border-box; width: 76px; height: 76px;
+      box-sizing: border-box; width: var(--tian-cell); height: var(--tian-cell);
       display: flex; flex-direction: row; align-items: stretch;
       border-right: 1.2px dotted #555; border-bottom: 1.2px dotted #555;
       cursor: default; user-select: none; background: #fff; overflow: hidden;
@@ -119,13 +134,13 @@
     .tian-sep-dot { color: #bbb; font-size: 0.7rem; }
 
     .tian-char-box {
-      width: 52px; height: 100%; position: relative; border-right: 1px dotted #999;
+      width: 68%; height: 100%; position: relative; border-right: 1px dotted #999;
       display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;
     }
     .tian-char-box::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; border-top: 1px dotted #bbb; z-index: 1; }
     .tian-char-box::after { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; border-left: 1px dotted #bbb; z-index: 1; }
     .tian-char-text {
-      position: relative; z-index: 2; font-size: 2rem; font-weight: normal; color: #000;
+      position: relative; z-index: 2; font-size: calc(var(--tian-cell) * 0.42); font-weight: normal; color: #000;
       font-family: 'DFKai-SB', 'BiauKai', serif; transition: 0.2s;
     }
 
@@ -137,7 +152,7 @@
       position: relative; z-index: 2; color: #000; font-family: 'DFKai-SB', 'BiauKai', serif;
       display: flex; flex-direction: column; align-items: center; line-height: 1.15;
     }
-    .tian-zy-text .zy-line { display: block; font-size: 0.78rem; }
+    .tian-zy-text .zy-line { display: block; font-size: calc(var(--tian-cell) * 0.16); }
     .tian-zy-text .zy-tone-wrap { position: relative; }
     .tian-zy-text .zy-tone { position: absolute; top: -3px; right: -9px; font-size: 0.6rem; }
 
@@ -162,12 +177,18 @@
 
     /* 列印設定：直式文字、橫向紙張，欄數才能排得多 */
     @media print {
-      @page { size: A4 landscape; margin: 10mm; }
+      @page { size: A4 landscape; margin: 8mm; }
       body { background: #fff !important; }
       header, nav, .lesson-selector-bar, .no-print { display: none !important; }
       main { max-width: 100%; padding: 0; }
       .test-panel { display: none !important; }
-      .tian-page-wrapper { box-shadow: none; padding: 0; overflow: visible; }
+      .tian-page-wrapper {
+        --tian-cell: 58px; box-shadow: none; padding: 0; overflow: visible;
+        width: 100%; transform-origin: top right;
+      }
+      .tian-sidebar { padding: 2px 6px 2px 2px; margin-left: 6px; }
+      .tian-sidebar div.sb-small { font-size: 0.6rem; }
+      .tian-sidebar div.sb-big { font-size: 0.85rem; }
       .tian-grid { border-top: 1.2px dotted #000; border-left: 1.2px dotted #000; }
       * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
       .tian-cell-wrap { border-color: #000 !important; }
@@ -329,6 +350,17 @@
 
   </main>
 
+  <!-- 👆 點生字/語詞看解釋的彈窗 -->
+  <div id="def-popup-overlay" class="def-popup-overlay hidden no-print" onclick="if(event.target===this) closeDefPopup()">
+    <div class="def-popup-card">
+      <div class="def-popup-header">
+        <span id="def-popup-title"></span>
+        <button class="def-popup-close" onclick="closeDefPopup()">✕</button>
+      </div>
+      <div id="def-popup-body" class="def-popup-body">請點生字或語詞查看意思。</div>
+    </div>
+  </div>
+
   <script>
     // === 資料庫 ===
     const lessonNames = [
@@ -338,7 +370,7 @@
     ];
 
     const defaultData = {
-      grade: "五", semester: "上", publisher: "康軒", speed: "0.75", soundEnabled: true, zhuyinCache: {},
+      grade: "五", semester: "上", publisher: "康軒", speed: "0.75", soundEnabled: true, zhuyinCache: {}, definitionCache: {},
       lessons: Array.from({length: 12}, (_, i) => ({
         id: i + 1,
         title: lessonNames[i],
@@ -370,6 +402,7 @@
 
       if (typeof appData.soundEnabled === 'undefined') appData.soundEnabled = true;
       if (!appData.zhuyinCache) appData.zhuyinCache = {};
+      if (!appData.definitionCache) appData.definitionCache = {};
       appData.lessons.forEach(l => { if (typeof l.extraTerms === 'undefined') l.extraTerms = ""; });
 
       if(appData.lessons[0].chars.length <= 2 && appData.lessons[0].batchText.length > 50) {
@@ -448,14 +481,16 @@
               <div class="delete-bg" onclick="deleteChar(${lesson.id}, ${i})">🗑️</div>
               <div class="char-card">
                 <div class="char-header">
-                  <div class="char-big">${c.char}</div>
+                  <div class="char-big" data-word="${c.char}" title="點一下看字義">${c.char}</div>
                   <div class="char-info">
                     <div class="char-pinyin">${c.zhuyin} <span class="char-radical">${c.rad}</span></div>
+                    <div style="font-size:0.72rem; color:#bbb; margin-top:2px;">👆 點字看意思</div>
                   </div>
                   <button class="btn btn-blue" style="padding: 0.3rem;" onclick="speak('${c.char}')">🔊</button>
                 </div>
-                <div style="font-size:0.85rem; color:var(--m-purple); font-weight:800; margin-bottom:5px;">圈詞聽寫 (可修改)：</div>
-                <input type="text" class="input-box" style="padding:0.4rem; font-size:0.95rem; font-weight:bold;" value="${c.terms}" onblur="saveCharData(${lesson.id}, ${i}, 'terms', this.value)">
+                <div style="font-size:0.85rem; color:var(--m-purple); font-weight:800; margin-bottom:5px;">圈詞聽寫 (可修改，點下方詞語看語詞意思)：</div>
+                <input type="text" class="input-box" style="padding:0.4rem; font-size:0.95rem; font-weight:bold;" value="${c.terms}" onblur="saveCharData(${lesson.id}, ${i}, 'terms', this.value); updateTermsChips(${lesson.id}, ${i}, this.value)">
+                <div class="terms-chips" id="chips-${lesson.id}-${i}">${buildTermsChipsHtml(c.terms)}</div>
                 <input type="text" class="input-box" style="padding:0.4rem; font-size:0.9rem; margin-top:5px; background:#FFF9E6; border-color:#FFDAC1;" placeholder="⚠️ 易錯提醒或造句備註..." value="${c.note}" onblur="saveCharData(${lesson.id}, ${i}, 'note', this.value)">
               </div>
             </div>
@@ -464,6 +499,16 @@
       `;
       container.innerHTML = html;
       document.getElementById('test-lesson-select').value = currentLessonId;
+    }
+
+    function buildTermsChipsHtml(terms) {
+      const words = (terms || '').split(/[,，、\s]+/).filter(Boolean);
+      return words.map(w => `<span class="term-chip" data-word="${w}">${w}</span>`).join('');
+    }
+
+    function updateTermsChips(lId, cIdx, val) {
+      const container = document.getElementById(`chips-${lId}-${cIdx}`);
+      if (container) container.innerHTML = buildTermsChipsHtml(val);
     }
 
     function updateLessonTitle(lId, newTitle) {
@@ -670,14 +715,15 @@
       const parts = l.title.split('：');
       const lessonNo = parts[0] || l.title;
       const lessonName = parts[1] || '';
-      const lines = [
-        `<div class="sb-small">${appData.publisher}版</div>`,
-        `<div class="sb-small">${appData.grade}${appData.semester}國語</div>`,
-        `<div class="sb-big">${lessonNo}</div>`
-      ];
-      if (lessonName) lines.push(`<div class="sb-big">${lessonName}</div>`);
-      lines.push(`<div class="sb-small">生字聽寫練習單</div>`);
-      return `<div class="tian-sidebar">${lines.join('')}</div>`;
+
+      // 最多只排 2 排：第 1 排（外側，靠近頁緣）放版本/年級/單張標題，第 2 排（靠近格子）放課別/課名
+      const col1 = [`${appData.publisher}版`, `${appData.grade}${appData.semester}國語`, `生字聽寫練習單`].join('<br>');
+      const col2 = lessonName ? `${lessonNo}<br>${lessonName}` : lessonNo;
+
+      return `<div class="tian-sidebar">
+        <div class="sb-small">${col1}</div>
+        <div class="sb-big">${col2}</div>
+      </div>`;
     }
 
     function generateGrid() {
@@ -710,8 +756,8 @@
       // 用 CSS Grid 明確指定每一格的欄、列座標，內容多寡完全不影響格線位置，杜絕錯位問題
       const gridDiv = document.createElement('div');
       gridDiv.className = 'tian-grid';
-      gridDiv.style.gridTemplateColumns = `repeat(${totalCols}, 76px)`;
-      gridDiv.style.gridTemplateRows = `repeat(${rowsPerCol}, 76px)`;
+      gridDiv.style.gridTemplateColumns = `repeat(${totalCols}, var(--tian-cell))`;
+      gridDiv.style.gridTemplateRows = `repeat(${rowsPerCol}, var(--tian-cell))`;
 
       cells.forEach((data, idx) => {
         const dataCol = Math.floor(idx / rowsPerCol); // 資料上第幾欄（0 = 最先讀到的字）
@@ -813,14 +859,17 @@
     async function searchMoedictRobust() {
       const q = document.getElementById('dict-input').value.trim();
       const out = document.getElementById('dict-output');
-      if(!q) return;
+      if (!q) return;
       out.innerHTML = `<span style="color:var(--m-purple); font-weight:bold;">🔍 正在查詢中...</span>`;
+      out.innerHTML = await fetchDefinitionHtml(q);
+    }
 
+    // 共用查詢函式：依序嘗試萌典端點，成功則回傳整理好的 HTML，失敗則回傳備援連結
+    async function fetchDefinitionHtml(q) {
       const endpoints = [
         `https://www.moedict.tw/uni/${encodeURIComponent(q)}.json`,
         `https://www.moedict.tw/a/${encodeURIComponent(q)}.json`
       ];
-
       for (const url of endpoints) {
         try {
           const res = await fetch(url);
@@ -828,18 +877,15 @@
           const data = await res.json();
           const heteronyms = data.heteronyms || data.h;
           if (!data || !heteronyms || !Array.isArray(heteronyms) || heteronyms.length === 0) continue;
-          renderDictResult(data, q);
-          return;
+          return buildDictHtml(data, q);
         } catch (e) {
           // 嘗試下一個端點
         }
       }
-
-      out.innerHTML = fallbackHtml(q);
+      return fallbackHtml(q);
     }
 
-    function renderDictResult(data, q) {
-      const out = document.getElementById('dict-output');
+    function buildDictHtml(data, q) {
       let html = `<strong>【${data.title || q}】</strong><br>`;
       if (data.radical) html += `<span style="font-size:1rem; color:#888;">部首：${data.radical}部${data.stroke_count ? (' | 筆畫：' + data.stroke_count + '畫') : ''}</span><br><br>`;
 
@@ -858,7 +904,7 @@
         }
       });
 
-      out.innerHTML = html || fallbackHtml(q);
+      return html || fallbackHtml(q);
     }
 
     function fallbackHtml(q) {
@@ -867,6 +913,33 @@
         請點擊下方按鈕直接查詢「${q}」：<br><br>
         <a href="https://dict.revised.moe.edu.tw/search.jsp?md=1&word=${encodeURIComponent(q)}" target="_blank" class="btn btn-pink" style="text-decoration:none; font-size:1.1rem; padding: 0.8rem 1.5rem;">🔗 前往教育部國語辭典查「${q}」</a>
       `;
+    }
+
+    // === 👆 點生字／語詞馬上看解釋（彈窗） ===
+    async function showDefPopup(word) {
+      if (!word) return;
+      playClickSound();
+      const overlay = document.getElementById('def-popup-overlay');
+      const title = document.getElementById('def-popup-title');
+      const body = document.getElementById('def-popup-body');
+      title.innerText = word;
+      overlay.classList.remove('hidden');
+
+      if (!appData.definitionCache) appData.definitionCache = {};
+      if (appData.definitionCache[word]) {
+        body.innerHTML = appData.definitionCache[word];
+        return;
+      }
+
+      body.innerHTML = `<span style="color:var(--m-purple); font-weight:bold;">🔍 查詢中...</span>`;
+      const html = await fetchDefinitionHtml(word);
+      appData.definitionCache[word] = html;
+      saveData();
+      if (title.innerText === word) body.innerHTML = html; // 避免使用者已切換到別的字時覆蓋錯內容
+    }
+
+    function closeDefPopup() {
+      document.getElementById('def-popup-overlay').classList.add('hidden');
     }
 
     function copyDictText() {
@@ -1005,6 +1078,14 @@
       const target = e.target.closest('.btn, .nav-btn, .tian-char-box, .tian-zy-box, .lesson-title-display, .delete-bg, select');
       if (target) playClickSound();
     }, true);
+
+    // 點生字（char-big）或語詞標籤（term-chip）馬上查意思
+    document.addEventListener('click', function (e) {
+      const wordEl = e.target.closest('.char-big, .term-chip');
+      if (wordEl && wordEl.dataset.word) {
+        showDefPopup(wordEl.dataset.word);
+      }
+    });
   </script>
 </body>
 </html>
