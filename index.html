@@ -277,12 +277,28 @@
         <label style="font-weight: 800; color: var(--m-purple); font-size: 0.9rem; display:block; margin: 10px 0 4px;">➕ 加強聽寫（自訂加強字詞，會加在本課圈詞後面）：</label>
         <textarea id="test-extra-input" class="textarea-box" rows="2" placeholder="輸入需要額外加強練習的字詞..." onblur="saveExtraTerms(); generateGrid();"></textarea>
 
+        <label style="font-weight: 800; color: var(--m-purple); font-size: 0.9rem; display:block; margin: 10px 0 4px;">🔁 同一詞語念兩次的中間間隔：</label>
+        <select id="repeat-gap" class="input-box" style="padding:0.4rem; font-weight:bold; cursor:pointer;" onchange="saveData()">
+          <option value="1">間隔 1 秒</option>
+          <option value="1.5" selected>間隔 1.5 秒</option>
+          <option value="2">間隔 2 秒</option>
+          <option value="3">間隔 3 秒</option>
+          <option value="4">間隔 4 秒</option>
+        </select>
+
         <div style="display: flex; gap: 10px; margin-top: 10px; justify-content: center; flex-wrap: wrap;">
           <button class="btn btn-green" onclick="generateGrid()">✅ 更新下方田字格</button>
           <button class="btn btn-yellow" id="btn-correct-mode" onclick="toggleCorrectMode()">✏️ 校正注音模式：關</button>
-          <button class="btn btn-pink" id="btn-play" onclick="toggleDictation()">▶️ 播放聽寫 (間隔5秒)</button>
           <button class="btn btn-blue" onclick="window.print()">🖨️ 列印直式田字格（橫向紙張）</button>
         </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 10px; justify-content: center; flex-wrap: wrap;">
+          <button class="btn btn-pink" id="btn-play" onclick="startDictation()">▶️ 播放聽寫</button>
+          <button class="btn btn-yellow hidden" id="btn-pause" onclick="togglePauseDictation()">⏸️ 暫停</button>
+          <button class="btn btn-blue hidden" id="btn-replay" onclick="replayCurrentTerm()">🔁 重播這題</button>
+          <button class="btn btn-pink hidden" id="btn-stop" onclick="stopDictation()">⏹️ 停止測驗</button>
+        </div>
+        <div id="dictation-status" style="text-align:center; font-weight:800; color:var(--m-purple); min-height:1.4em; margin-top:6px;"></div>
       </div>
 
       <div id="grid-render-area" class="tian-page-wrapper"></div>
@@ -429,6 +445,8 @@
       appData.semester = document.getElementById('sel-semester').value;
       appData.publisher = document.getElementById('sel-publisher').value;
       appData.speed = document.getElementById('speech-speed').value;
+      const gapEl = document.getElementById('repeat-gap');
+      if (gapEl) appData.repeatGap = gapEl.value;
       localStorage.setItem('MandarinAppV9', JSON.stringify(appData));
     }
 
@@ -437,6 +455,8 @@
       document.getElementById('sel-semester').value = appData.semester;
       document.getElementById('sel-publisher').value = appData.publisher;
       document.getElementById('speech-speed').value = appData.speed || "0.75";
+      const gapEl = document.getElementById('repeat-gap');
+      if (gapEl) gapEl.value = appData.repeatGap || "1.5";
       updateSoundToggleLabel();
     }
 
@@ -510,7 +530,7 @@
 
     function buildTermsChipsHtml(terms) {
       const words = (terms || '').split(/[,，、\s]+/).filter(Boolean);
-      return words.map(w => `<span class="term-chip" data-word="${w}">${w}</span>`).join('');
+      return words.map(w => `<span class="term-chip" data-word="${w}">🔊 ${w}</span>`).join('');
     }
 
     function updateTermsChips(lId, cIdx, val) {
@@ -802,43 +822,122 @@
       fetchMissingZhuyin(cells);
     }
 
-    // 聽寫語音控制
+    // 聽寫語音控制：支援暫停/繼續（繼續時會先重播目前這題）、單獨重播、可調整兩次朗讀間隔
     let isPlaying = false;
+    let isPaused = false;
+    let currentTermIndex = 0;
+    let currentTermsList = [];
 
-    async function toggleDictation() {
-      const btn = document.getElementById('btn-play');
-      if(isPlaying) {
-        isPlaying = false;
-        window.speechSynthesis.cancel();
-        btn.innerText = "▶️ 播放聽寫 (間隔5秒)";
-        btn.classList.remove('btn-green'); btn.classList.add('btn-pink');
-        return;
+    function updateDictationButtons() {
+      const playBtn = document.getElementById('btn-play');
+      const pauseBtn = document.getElementById('btn-pause');
+      const replayBtn = document.getElementById('btn-replay');
+      const stopBtn = document.getElementById('btn-stop');
+      if (isPlaying) {
+        playBtn.classList.add('hidden');
+        pauseBtn.classList.remove('hidden');
+        replayBtn.classList.remove('hidden');
+        stopBtn.classList.remove('hidden');
+        pauseBtn.innerText = isPaused ? '▶️ 繼續（重播這題）' : '⏸️ 暫停';
+      } else {
+        playBtn.classList.remove('hidden');
+        pauseBtn.classList.add('hidden');
+        replayBtn.classList.add('hidden');
+        stopBtn.classList.add('hidden');
+        document.getElementById('dictation-status').innerText = '';
       }
+    }
 
-      const terms = splitWords(combineAllTerms());
-      if(terms.length === 0) return alert("請先輸入詞語！");
+    function setDictationStatus(text) {
+      const el = document.getElementById('dictation-status');
+      if (el) el.innerText = text;
+    }
 
+    // 暫停時卡在這裡等待，直到使用者按繼續或停止
+    function waitWhilePaused() {
+      return new Promise(resolve => {
+        const check = () => {
+          if (!isPlaying || !isPaused) return resolve();
+          setTimeout(check, 200);
+        };
+        check();
+      });
+    }
+
+    async function startDictation() {
+      currentTermsList = splitWords(combineAllTerms());
+      if (currentTermsList.length === 0) return alert("請先輸入詞語！");
       isPlaying = true;
-      btn.innerText = "⏹️ 停止測驗";
-      btn.classList.remove('btn-pink'); btn.classList.add('btn-green');
+      isPaused = false;
+      currentTermIndex = 0;
+      updateDictationButtons();
+      await runDictationLoop();
+    }
 
-      for(let i=0; i<terms.length; i++) {
-        if(!isPlaying) break;
-        await playSpeech(terms[i]);
-        if(!isPlaying) break;
-        await sleep(1000);
-        await playSpeech(terms[i]);
-        if(!isPlaying) break;
+    function togglePauseDictation() {
+      if (!isPlaying) return;
+      isPaused = !isPaused;
+      if (isPaused) {
+        window.speechSynthesis.cancel();
+        setDictationStatus('⏸️ 已暫停，按「繼續」會重播剛才的詞語再接續播放');
+      }
+      updateDictationButtons();
+      if (!isPaused) {
+        // 繼續時，先重播目前這一題，孩子沒聽清楚也不怕
+        playSpeech(currentTermsList[currentTermIndex]);
+      }
+    }
 
-        for(let s=5; s>0; s--) {
-          if(!isPlaying) break;
-          btn.innerText = `⏹️ 倒數 ${s}秒 (第 ${i+1}/${terms.length} 題)`;
+    function replayCurrentTerm() {
+      if (!isPlaying || !currentTermsList[currentTermIndex]) return;
+      window.speechSynthesis.cancel();
+      playSpeech(currentTermsList[currentTermIndex]);
+    }
+
+    function stopDictation() {
+      isPlaying = false;
+      isPaused = false;
+      window.speechSynthesis.cancel();
+      updateDictationButtons();
+    }
+
+    async function runDictationLoop() {
+      const terms = currentTermsList;
+      const gapMs = Math.round((parseFloat(document.getElementById('repeat-gap').value) || 1.5) * 1000);
+
+      for (let i = currentTermIndex; i < terms.length; i++) {
+        currentTermIndex = i;
+        if (!isPlaying) return;
+        await waitWhilePaused();
+        if (!isPlaying) return;
+
+        setDictationStatus(`第 ${i + 1} / ${terms.length} 題`);
+        await playSpeech(terms[i]);
+        if (!isPlaying) return;
+        await waitWhilePaused();
+        if (!isPlaying) return;
+
+        await sleep(gapMs); // 兩次朗讀之間的間隔（可在上方調整）
+        if (!isPlaying) return;
+        await waitWhilePaused();
+        if (!isPlaying) return;
+
+        await playSpeech(terms[i]);
+        if (!isPlaying) return;
+
+        for (let s = 5; s > 0; s--) {
+          if (!isPlaying) return;
+          await waitWhilePaused();
+          if (!isPlaying) return;
+          setDictationStatus(`第 ${i + 1} / ${terms.length} 題．倒數 ${s} 秒`);
           await sleep(1000);
         }
       }
-      if(isPlaying) {
+
+      if (isPlaying) {
+        setDictationStatus('測驗結束，大家辛苦了！');
         await playSpeech("測驗結束，大家辛苦了！");
-        toggleDictation();
+        stopDictation();
       }
     }
 
