@@ -148,6 +148,8 @@
     .tian-zy-box {
       flex: 1; height: 100%; position: relative; display: flex; align-items: center; justify-content: center; cursor: pointer; min-width: 0;
     }
+    .tian-page-wrapper.correct-mode .tian-zy-box { background: #FFF3CD; }
+    .tian-page-wrapper.correct-mode .tian-zy-box::after { content: '✏️'; position: absolute; top: 1px; right: 1px; font-size: 0.5rem; opacity: 0.6; }
     .tian-zy-text {
       position: relative; z-index: 2; color: #000; font-family: 'DFKai-SB', 'BiauKai', serif;
       display: flex; flex-direction: column; align-items: center; line-height: 1.15;
@@ -195,6 +197,8 @@
       .tian-char-box { border-color: #333 !important; }
       .tian-char-box::before, .tian-char-box::after { border-color: #555 !important; }
       .tian-sidebar div { color: #000 !important; }
+      .tian-page-wrapper.correct-mode .tian-zy-box { background: transparent !important; }
+      .tian-page-wrapper.correct-mode .tian-zy-box::after { content: none !important; }
       .text-hidden { color: transparent !important; }
       .mistake-card { page-break-inside: avoid; border: 1px solid #ccc; background: #fff !important; }
     }
@@ -261,7 +265,8 @@
         <h2 style="color: var(--m-pink); margin-bottom: 0.5rem;">自動聽寫與直式田字格</h2>
         <p style="font-size: 0.95rem; color: var(--text-light); margin-bottom: 1rem; line-height: 1.5;">
           下方自動帶入本課圈詞，可自由修改；預設國字與注音都會顯示，列印時採直書、橫向紙張排版（由右至左），格線為點狀田字格。<br>
-          👉 <b>點擊格子中的國字或右側注音，可以把不想要的部分變不見，自訂聽寫考卷內容！</b>
+          👉 <b>點擊格子中的國字或右側注音，可以把不想要的部分變不見，自訂聽寫考卷內容！</b><br>
+          ✏️ <b>注音查錯了？（例如破音字）</b>點一下「校正注音模式」按鈕打開後，再點格子裡的注音就能手動修改；改好的內容會記住，之後都會用您校正過的讀音。
         </p>
 
         <select id="test-lesson-select" class="input-box" style="margin-bottom: 10px; font-weight: bold; cursor:pointer;" onchange="loadTestTerms()"></select>
@@ -274,6 +279,7 @@
 
         <div style="display: flex; gap: 10px; margin-top: 10px; justify-content: center; flex-wrap: wrap;">
           <button class="btn btn-green" onclick="generateGrid()">✅ 更新下方田字格</button>
+          <button class="btn btn-yellow" id="btn-correct-mode" onclick="toggleCorrectMode()">✏️ 校正注音模式：關</button>
           <button class="btn btn-pink" id="btn-play" onclick="toggleDictation()">▶️ 播放聽寫 (間隔5秒)</button>
           <button class="btn btn-blue" onclick="window.print()">🖨️ 列印直式田字格（橫向紙張）</button>
         </div>
@@ -370,7 +376,7 @@
     ];
 
     const defaultData = {
-      grade: "五", semester: "上", publisher: "康軒", speed: "0.75", soundEnabled: true, zhuyinCache: {}, definitionCache: {},
+      grade: "五", semester: "上", publisher: "康軒", speed: "0.75", soundEnabled: true, zhuyinCache: {}, definitionCache: {}, zhuyinOverride: {},
       lessons: Array.from({length: 12}, (_, i) => ({
         id: i + 1,
         title: lessonNames[i],
@@ -402,6 +408,7 @@
 
       if (typeof appData.soundEnabled === 'undefined') appData.soundEnabled = true;
       if (!appData.zhuyinCache) appData.zhuyinCache = {};
+      if (!appData.zhuyinOverride) appData.zhuyinOverride = {};
       if (!appData.definitionCache) appData.definitionCache = {};
       appData.lessons.forEach(l => { if (typeof l.extraTerms === 'undefined') l.extraTerms = ""; });
 
@@ -634,6 +641,7 @@
     }
 
     function findZhuyin(ch, preferredLessonId) {
+      if (appData.zhuyinOverride && appData.zhuyinOverride[ch]) return appData.zhuyinOverride[ch];
       if (preferredLessonId) {
         const pl = appData.lessons.find(x => x.id === preferredLessonId);
         if (pl) {
@@ -779,10 +787,10 @@
           const zy = data.zhuyin || '';
           cellEl.setAttribute('data-char', ch);
           cellEl.innerHTML = `
-            <div class="tian-char-box" onclick="this.querySelector('.tian-char-text').classList.toggle('text-hidden')">
+            <div class="tian-char-box">
               <span class="tian-char-text">${ch}</span>
             </div>
-            <div class="tian-zy-box" onclick="this.querySelector('.tian-zy-text').classList.toggle('text-hidden')">
+            <div class="tian-zy-box">
               <span class="tian-zy-text">${formatZhuyinVertical(zy)}</span>
             </div>
           `;
@@ -1074,10 +1082,59 @@
       btn.innerText = appData.soundEnabled ? "🔊 按鍵音效：開" : "🔇 按鍵音效：關";
     }
 
+    // === ✏️ 校正注音模式（處理破音字或注音查錯的情況） ===
+    let correctMode = false;
+
+    function toggleCorrectMode() {
+      correctMode = !correctMode;
+      const btn = document.getElementById('btn-correct-mode');
+      const area = document.getElementById('grid-render-area');
+      if (btn) btn.innerText = correctMode ? '✏️ 校正注音模式：開（點注音修改）' : '✏️ 校正注音模式：關';
+      if (area) area.classList.toggle('correct-mode', correctMode);
+      playClickSound();
+    }
+
+    function editZhuyinForChar(ch) {
+      if (!ch) return;
+      const current = findZhuyin(ch) || '';
+      const input = prompt(`請輸入「${ch}」正確的注音符號（例如：ㄊㄡˊ）\n清空後按確定 = 取消手動校正，改回系統預設讀音`, current);
+      if (input === null) return; // 使用者按取消
+      const trimmed = input.trim();
+      if (!appData.zhuyinOverride) appData.zhuyinOverride = {};
+      if (trimmed) {
+        appData.zhuyinOverride[ch] = trimmed;
+      } else {
+        delete appData.zhuyinOverride[ch];
+      }
+      saveData();
+      generateGrid();
+    }
+
     document.addEventListener('click', function (e) {
       const target = e.target.closest('.btn, .nav-btn, .tian-char-box, .tian-zy-box, .lesson-title-display, .delete-bg, select');
       if (target) playClickSound();
     }, true);
+
+    // 田字格點擊：一般模式下切換顯示/隱藏；校正注音模式下點注音格改成手動輸入正確讀音
+    document.addEventListener('click', function (e) {
+      const zyBox = e.target.closest('.tian-zy-box');
+      if (zyBox) {
+        const cell = zyBox.closest('.tian-cell-wrap');
+        const ch = cell ? cell.dataset.char : '';
+        if (correctMode && ch) {
+          editZhuyinForChar(ch);
+        } else {
+          const span = zyBox.querySelector('.tian-zy-text');
+          if (span) span.classList.toggle('text-hidden');
+        }
+        return;
+      }
+      const charBox = e.target.closest('.tian-char-box');
+      if (charBox) {
+        const span = charBox.querySelector('.tian-char-text');
+        if (span) span.classList.toggle('text-hidden');
+      }
+    });
 
     // 點生字（char-big）或語詞標籤（term-chip）馬上查意思
     document.addEventListener('click', function (e) {
